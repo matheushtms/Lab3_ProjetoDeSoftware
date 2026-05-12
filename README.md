@@ -1,3 +1,4 @@
+<img width="1536" height="1024" alt="Moselo ER" src="https://github.com/user-attachments/assets/218846a6-b472-4c24-8173-168fb087f42a" />
 # Lab3_ProjetoDeSoftware
 
 
@@ -50,4 +51,6 @@ Essa estratégia foi escolhida por oferecer simplicidade, manutenção facilitad
 
 ---
 ## Modelo ER
-<img width="1536" height="1024" alt="Untitled design" src="https://github.com/user-attachments/assets/250bbdb1-b03e-4e67-ab1c-f66b39297e02" />
+<img width="1536" height="1024" alt="Moselo ER" src="https://github.com/user-attachments/assets/96501363-f093-49a4-921b-d764b916581f" />
+
+
