@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empresas Parceiras</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Cadastro de Empresa Parceira</h1>
+
+    <form id="formEmpresa" class="form">
+      <input type="hidden" id="empresaId" />
+
+      <input type="text" id="nome" placeholder="Nome" required />
+      <input type="email" id="email" placeholder="E-mail" required />
+      <input type="text" id="cnpj" placeholder="CNPJ" required />
+      <input type="text" id="descricao" placeholder="Descrição" />
+
+      <button type="submit" class="btn">Salvar</button>
+      <a href="/" class="btn secondary">Voltar</a>
+    </form>
+
+    <h2>Lista de Empresas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>CNPJ</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="listaEmpresas"></tbody>
+    </table>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
