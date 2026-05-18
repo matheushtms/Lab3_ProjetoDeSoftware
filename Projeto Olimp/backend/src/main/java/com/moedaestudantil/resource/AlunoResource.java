@@ -2,54 +2,67 @@ package com.moedaestudantil.resource;
 
 import com.moedaestudantil.dto.AlunoDTO;
 import com.moedaestudantil.service.AlunoService;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.net.URI;
 import java.util.List;
 
-@Path("/alunos")
-@ApplicationScoped
+@Path("/api/alunos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AlunoResource {
 
     @Inject
-    AlunoService alunoService;
+    private AlunoService alunoService;
 
+    /**
+     * Obtém a lista de todos os alunos cadastrados.
+     * GET /api/alunos
+     */
     @GET
-    public List<AlunoDTO> listarTodos() {
-        return alunoService.listarTodos();
+    public Response listar() {
+        List<AlunoDTO> alunos = alunoService.listarTodos();
+        return Response.ok(alunos).build();
     }
 
+    /**
+     * Obtém um aluno específico pelo ID.
+     * GET /api/alunos/{id}
+     */
     @GET
     @Path("/{id}")
-    public AlunoDTO buscarPorId(@PathParam("id") Long id) {
-        return alunoService.buscarPorId(id);
+    public Response buscarPorId(@PathParam("id") Long id) {
+        AlunoDTO aluno = alunoService.buscarPorId(id);
+        return Response.ok(aluno).build();
     }
 
+    /**
+     * Cadastra um novo aluno no sistema.
+     * POST /api/alunos
+     */
     @POST
     public Response criar(AlunoDTO dto) {
-        AlunoDTO criado = alunoService.criar(dto);
-        return Response.created(URI.create("/alunos/" + criado.id)).entity(criado).build();
+        AlunoDTO novoAluno = alunoService.criar(dto);
+        return Response.status(Response.Status.CREATED).entity(novoAluno).build();
     }
 
+    /**
+     * Atualiza um aluno existente.
+     * PUT /api/alunos/{id}
+     */
     @PUT
     @Path("/{id}")
-    public AlunoDTO atualizar(@PathParam("id") Long id, AlunoDTO dto) {
-        return alunoService.atualizar(id, dto);
+    public Response atualizar(@PathParam("id") Long id, AlunoDTO dto) {
+        AlunoDTO alunoAtualizado = alunoService.atualizar(id, dto);
+        return Response.ok(alunoAtualizado).build();
     }
 
+    /**
+     * Deleta um aluno.
+     * DELETE /api/alunos/{id}
+     */
     @DELETE
     @Path("/{id}")
     public Response excluir(@PathParam("id") Long id) {
