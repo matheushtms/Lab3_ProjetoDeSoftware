@@ -1,0 +1,169 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  background: #0f172a;
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: end;
+  padding: 48px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.15), rgba(15, 23, 42, 0.65)),
+    url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80')
+      center/cover no-repeat;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(10, 15, 30, 0.35), rgba(10, 15, 30, 0.1));
+}
+
+.hero-content {
+  position: relative;
+  max-width: 520px;
+  color: white;
+
+  .brand {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.9;
+  }
+
+  h1 {
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    line-height: 0.95;
+    margin: 0 0 18px;
+    max-width: 8ch;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 38rem;
+    color: rgba(255, 255, 255, 0.92);
+  }
+}
+
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: linear-gradient(180deg, #f3f4f6, #e5e7eb);
+}
+
+.card {
+  width: min(100%, 440px);
+  padding: 32px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.2);
+
+  h2 {
+    margin: 18px 0 24px;
+    font-size: 2rem;
+    color: #111827;
+  }
+
+  label {
+    display: block;
+    margin: 14px 0 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  input,
+  select {
+    width: 100%;
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    border-radius: 14px;
+    padding: 14px 16px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.92);
+    font-size: 0.98rem;
+    color: #111827;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 20px;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+  }
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  button {
+    margin-top: 0;
+    background: #e5e7eb;
+    color: #111827;
+    box-shadow: none;
+  }
+
+  button.active {
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    color: white;
+  }
+}
+
+.message {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 900px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    min-height: 320px;
+    padding: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .panel {
+    padding: 18px;
+  }
+
+  .card {
+    padding: 22px;
+    border-radius: 22px;
+  }
+}
