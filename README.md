@@ -1,4 +1,4 @@
-<img width="1536" height="1024" alt="Moselo ER" src="https://github.com/user-attachments/assets/218846a6-b472-4c24-8173-168fb087f42a" />
+
 # Lab3_ProjetoDeSoftware
 
 
