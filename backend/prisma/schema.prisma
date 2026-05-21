@@ -21,6 +21,32 @@ model Aluno {
   dataNascimento DateTime?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  transacoes     Transacao[] @relation("TransacoesRecebidas")
+}
+
+model Professor {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  email        String   @unique
+  senha        String   @default("12345678")
+  cpf          String   @unique
+  departamento String?
+  saldo        Int      @default(1000)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  transacoes   Transacao[] @relation("TransacoesEnviadas")
+}
+
+model Transacao {
+  id           Int      @id @default(autoincrement())
+  professorId  Int
+  alunoId      Int
+  valor        Int
+  motivo       String
+  data         DateTime @default(now())
+
+  professor    Professor @relation("TransacoesEnviadas", fields: [professorId], references: [id])
+  aluno        Aluno     @relation("TransacoesRecebidas", fields: [alunoId], references: [id])
 }
 
 model EmpresaParceira {

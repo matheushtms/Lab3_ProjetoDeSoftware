@@ -38,9 +38,15 @@ export function LoginPage({ onNavigateToSignup, onLoginSuccess }: LoginPageProps
         } else {
           alert('Email não encontrado ou senha incorreta!');
         }
-      } else {
-        // Professor (Mock)
-        onLoginSuccess(activeTab, { nome: 'Professor Teste', email });
+      } else if (activeTab === 'professor') {
+        const res = await fetch('http://localhost:3001/api/professores');
+        const professores = await res.json();
+        const userExists = professores.find((p: any) => p.email === email && p.senha === senha);
+        if (userExists) {
+          onLoginSuccess(activeTab, userExists);
+        } else {
+          alert('Email não encontrado ou senha incorreta!');
+        }
       }
     } catch (error) {
       console.error(error);

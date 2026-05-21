@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -30,6 +30,23 @@ interface AlunoDashboardProps {
 export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
   const [activeTab, setActiveTab] = useState('visao-geral');
   const [editandoPerfil, setEditandoPerfil] = useState(false);
+  const [extrato, setExtrato] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (userData && userData.id) {
+      fetchExtrato();
+    }
+  }, [userData]);
+
+  const fetchExtrato = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/transacoes/aluno/${userData.id}`);
+      const data = await res.json();
+      setExtrato(data);
+    } catch (error) {
+      console.error('Erro ao buscar extrato do aluno:', error);
+    }
+  };
 
   // Usa dados do banco se disponíveis, senão mock
   const alunoData = userData || {
@@ -261,31 +278,22 @@ export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {transacoes.map((transacao) => (
+                  {extrato.length === 0 && (
+                    <p className="text-center text-gray-500 py-4">Nenhuma transação encontrada.</p>
+                  )}
+                  {extrato.map((transacao) => (
                     <div key={transacao.id}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex items-start gap-3 flex-1">
-                          <div
-                            className={`p-2 rounded-full ${
-                              transacao.tipo === 'recebimento'
-                                ? 'bg-green-100 text-green-600'
-                                : 'bg-orange-100 text-orange-600'
-                            }`}
-                          >
-                            {transacao.tipo === 'recebimento' ? (
-                              <ArrowDownLeft className="w-4 h-4" />
-                            ) : (
-                              <ShoppingBag className="w-4 h-4" />
-                            )}
+                          <div className="p-2 rounded-full bg-green-100 text-green-600">
+                            <ArrowDownLeft className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-gray-900 text-sm">
-                              {transacao.descricao}
+                              {transacao.motivo}
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
-                              {transacao.tipo === 'recebimento'
-                                ? transacao.professor
-                                : transacao.empresa}
+                              Enviado por: {transacao.professor?.nome}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
                               <Calendar className="w-3 h-3 text-gray-400" />
@@ -296,16 +304,11 @@ export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p
-                            className={`font-semibold ${
-                              transacao.valor > 0 ? 'text-green-600' : 'text-orange-600'
-                            }`}
-                          >
-                            {transacao.valor > 0 ? '+' : ''}
-                            {transacao.valor.toLocaleString('pt-BR')}
+                          <p className="font-semibold text-green-600">
+                            +{transacao.valor.toLocaleString('pt-BR')}
                           </p>
                           <Badge variant="outline" className="text-xs mt-1">
-                            {transacao.status}
+                            recebido
                           </Badge>
                         </div>
                       </div>

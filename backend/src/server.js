@@ -4,6 +4,8 @@ require('dotenv').config();
 
 const alunoRoutes = require('./routes/alunoRoutes');
 const empresaRoutes = require('./routes/empresaRoutes');
+const professorRoutes = require('./routes/professorRoutes');
+const transacaoRoutes = require('./routes/transacaoRoutes');
 
 const app = express();
 
@@ -13,6 +15,8 @@ app.use(express.json());
 // Rotas
 app.use('/api/alunos', alunoRoutes);
 app.use('/api/empresas', empresaRoutes);
+app.use('/api/professores', professorRoutes);
+app.use('/api/transacoes', transacaoRoutes);
 
 const PORT = process.env.PORT || 3001;
 

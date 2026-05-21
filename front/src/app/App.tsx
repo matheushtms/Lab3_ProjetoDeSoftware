@@ -3,9 +3,10 @@ import { LoginPage } from './components/LoginPage';
 import { SignupPage } from './components/SignupPage';
 import { AlunoDashboard } from './components/AlunoDashboard';
 import { EmpresaDashboard } from './components/EmpresaDashboard';
+import { ProfessorDashboard } from './components/ProfessorDashboard';
 import { Toaster } from './components/ui/sonner';
 
-type Screen = 'login' | 'signup' | 'aluno-dashboard' | 'empresa-dashboard';
+type Screen = 'login' | 'signup' | 'aluno-dashboard' | 'empresa-dashboard' | 'professor-dashboard';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('login');
@@ -23,8 +24,9 @@ export default function App() {
               setCurrentScreen('aluno-dashboard');
             } else if (userType === 'empresa') {
               setCurrentScreen('empresa-dashboard');
+            } else if (userType === 'professor') {
+              setCurrentScreen('professor-dashboard');
             }
-            // Adicionar lógica para professor posteriormente
           }}
         />
       )}
@@ -40,6 +42,13 @@ export default function App() {
       )}
       {currentScreen === 'empresa-dashboard' && (
         <EmpresaDashboard 
+          onLogout={() => { setCurrentScreen('login'); setCurrentUser(null); }} 
+          userData={currentUser} 
+          onUpdateUser={(dados) => setCurrentUser({ ...dados })}
+        />
+      )}
+      {currentScreen === 'professor-dashboard' && (
+        <ProfessorDashboard 
           onLogout={() => { setCurrentScreen('login'); setCurrentUser(null); }} 
           userData={currentUser} 
           onUpdateUser={(dados) => setCurrentUser({ ...dados })}
