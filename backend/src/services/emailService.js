@@ -60,7 +60,43 @@ const sendCoinTransferEmailToProfessor = async (professorEmail, professorNome, a
   }
 };
 
+const sendResgateEmailToAluno = async (alunoEmail, alunoNome, vantagemTitulo, empresaNome, codigo) => {
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${codigo}`;
+  
+  const mailOptions = {
+    from: `"Sistema de Moedas" <${process.env.EMAIL_USER}>`,
+    to: alunoEmail,
+    subject: 'Comprovante de Resgate de Vantagem 🎁',
+    html: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #9C27B0;">Parabéns, ${alunoNome}!</h2>
+        <p>Você resgatou com sucesso a vantagem: <strong>${vantagemTitulo}</strong> oferecida por <strong>${empresaNome}</strong>.</p>
+        
+        <div style="margin: 20px 0; padding: 15px; background-color: #f5f5f5; border-radius: 8px; text-align: center;">
+          <p style="font-size: 18px; margin-bottom: 10px;">Seu Código de Resgate:</p>
+          <h1 style="color: #333; letter-spacing: 2px;">${codigo}</h1>
+          <p style="font-size: 14px; color: #666; margin-top: 15px;">Apresente este QR Code no estabelecimento:</p>
+          <img src="${qrCodeUrl}" alt="QR Code ${codigo}" style="margin-top: 10px;" />
+        </div>
+        
+        <br/>
+        <p>Aproveite sua vantagem e continue se destacando!</p>
+        <p>Atenciosamente,</p>
+        <p><strong>Equipe do Sistema de Moedas Universitárias</strong></p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Email de resgate enviado com sucesso para ${alunoEmail}`);
+  } catch (error) {
+    console.error(`Erro ao enviar email de resgate para ${alunoEmail}:`, error);
+  }
+};
+
 module.exports = {
   sendCoinTransferEmailToAluno,
   sendCoinTransferEmailToProfessor,
+  sendResgateEmailToAluno
 };

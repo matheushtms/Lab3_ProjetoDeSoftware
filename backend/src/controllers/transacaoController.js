@@ -22,9 +22,8 @@ const enviarMoedas = async (req, res) => {
       return res.status(404).json({ error: 'Professor não encontrado.' });
     }
 
-    if (professor.saldo < valor) {
-      return res.status(400).json({ error: 'Saldo insuficiente.' });
-    }
+    // Professor tem moedas ilimitadas, portanto não descontamos do saldo dele
+    // e nem verificamos if (professor.saldo < valor)
 
     // Buscar dados do aluno
     const aluno = await prisma.aluno.findUnique({
@@ -37,11 +36,9 @@ const enviarMoedas = async (req, res) => {
 
     // Usar transaction para garantir integridade
     const transacao = await prisma.$transaction(async (tx) => {
-      // Deduz do professor
-      const professorAtualizado = await tx.professor.update({
-        where: { id: Number(professorId) },
-        data: { saldo: { decrement: Number(valor) } }
-      });
+      // O professor tem saldo ilimitado, não precisamos dar decrement
+      // Apenas creditamos no aluno
+
 
       // Credita no aluno
       const alunoAtualizado = await tx.aluno.update({
@@ -104,8 +101,46 @@ const getExtratoAluno = async (req, res) => {
       },
       orderBy: { data: 'desc' }
     });
-    res.json(transacoes);
+
+    const resgates = await prisma.resgate.findMany({
+      where: { alunoId: Number(id) },
+      include: {
+        vantagem: {
+          include: {
+            empresa: {
+              select: { nomeFantasia: true }
+            }
+          }
+        }
+      },
+      orderBy: { data: 'desc' }
+    });
+
+    const extratoTransacoes = transacoes.map(t => ({
+      id: `t_${t.id}`,
+      tipo: 'recebimento',
+      motivo: t.motivo,
+      valor: t.valor,
+      data: t.data,
+      professor: t.professor
+    }));
+
+    const extratoResgates = resgates.map(r => ({
+      id: `r_${r.id}`,
+      tipo: 'resgate',
+      motivo: `Resgate de Vantagem: ${r.vantagem.titulo}`,
+      valor: -r.vantagem.custo,
+      data: r.data,
+      empresa: r.vantagem.empresa.nomeFantasia,
+      codigo: r.codigo,
+      vantagemId: r.vantagemId
+    }));
+
+    const extrato = [...extratoTransacoes, ...extratoResgates].sort((a, b) => new Date(b.data) - new Date(a.data));
+
+    res.json(extrato);
   } catch (error) {
+    console.error('Erro ao buscar extrato do aluno:', error);
     res.status(500).json({ error: 'Erro ao buscar extrato do aluno.' });
   }
 };

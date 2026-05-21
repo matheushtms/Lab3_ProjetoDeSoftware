@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { EditarPerfilEmpresa } from './EditarPerfilEmpresa';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -8,6 +8,7 @@ import { Textarea } from './ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
+import { getFallbackImage } from './ui/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import {
   Dialog,
@@ -88,8 +89,8 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
   // Dados mockados da empresa
   const empresaData = userData ? {
     id: userData.id,
-    nome: userData.nomeFantasia,
-    cnpj: userData.cnpj,
+    nome: userData.nomeFantasia || 'Empresa Parceira',
+    cnpj: userData.cnpj || 'Não informado',
     email: userData.email,
     telefone: userData.telefone || 'Não informado',
     endereco: userData.endereco || 'Não informado',
@@ -107,36 +108,32 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
     responsavel: 'Maria Oliveira'
   };
 
-  // Vantagens mockadas
-  const [vantagens, setVantagens] = useState<Vantagem[]>([
-    {
-      id: 1,
-      titulo: 'Almoço Grátis',
-      descricao: '1 refeição completa gratuita',
-      custo: 200,
-      foto: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400',
-      ativa: true,
-      totalResgates: 45
-    },
-    {
-      id: 2,
-      titulo: '30% OFF em Combos',
-      descricao: 'Desconto de 30% em combos executivos',
-      custo: 150,
-      foto: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',
-      ativa: true,
-      totalResgates: 32
-    },
-    {
-      id: 3,
-      titulo: 'Sobremesa Grátis',
-      descricao: 'Sobremesa grátis na compra de refeição',
-      custo: 100,
-      foto: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400',
-      ativa: false,
-      totalResgates: 18
+  const [vantagens, setVantagens] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (empresaData.id) {
+      fetchVantagens();
     }
-  ]);
+  }, [empresaData.id]);
+
+  const fetchVantagens = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/vantagens?empresaId=${empresaData.id}`);
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setVantagens(data.map((v: any) => ({
+          ...v,
+          foto: v.imagem || getFallbackImage(v.id),
+          ativa: true,
+          totalResgates: v.resgates?.length || 0
+        })));
+      } else {
+        console.error('Erro ao buscar vantagens:', data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar vantagens:', error);
+    }
+  };
 
   // Resgates mockados
   const resgates: Resgate[] = [
@@ -185,42 +182,62 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
     foto: ''
   });
 
-  const handleAdicionarVantagem = () => {
-    const novaVantagem: Vantagem = {
-      id: vantagens.length + 1,
-      titulo: formVantagem.titulo,
-      descricao: formVantagem.descricao,
-      custo: parseInt(formVantagem.custo),
-      foto: formVantagem.foto || 'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400',
-      ativa: true,
-      totalResgates: 0
-    };
+  const handleAdicionarVantagem = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/api/vantagens', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          empresaId: empresaData.id,
+          titulo: formVantagem.titulo,
+          descricao: formVantagem.descricao,
+          custo: parseInt(formVantagem.custo),
+          imagem: formVantagem.foto
+        })
+      });
 
-    setVantagens([...vantagens, novaVantagem]);
-    setFormVantagem({ titulo: '', descricao: '', custo: '', foto: '' });
-    setDialogAberto(false);
-    toast.success('Vantagem adicionada com sucesso!');
+      if (res.ok) {
+        toast.success('Vantagem adicionada com sucesso!');
+        setFormVantagem({ titulo: '', descricao: '', custo: '', foto: '' });
+        setDialogAberto(false);
+        fetchVantagens();
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Erro ao adicionar vantagem.');
+      }
+    } catch (error) {
+      toast.error('Erro de conexão ao adicionar vantagem.');
+    }
   };
 
-  const handleEditarVantagem = () => {
+  const handleEditarVantagem = async () => {
     if (!vantagemEditando) return;
 
-    setVantagens(vantagens.map(v =>
-      v.id === vantagemEditando.id
-        ? {
-            ...v,
-            titulo: formVantagem.titulo,
-            descricao: formVantagem.descricao,
-            custo: parseInt(formVantagem.custo),
-            foto: formVantagem.foto
-          }
-        : v
-    ));
+    try {
+      const res = await fetch(`http://localhost:3001/api/vantagens/${vantagemEditando.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          titulo: formVantagem.titulo,
+          descricao: formVantagem.descricao,
+          custo: parseInt(formVantagem.custo),
+          imagem: formVantagem.foto
+        })
+      });
 
-    setFormVantagem({ titulo: '', descricao: '', custo: '', foto: '' });
-    setVantagemEditando(null);
-    setDialogAberto(false);
-    toast.success('Vantagem atualizada com sucesso!');
+      if (res.ok) {
+        toast.success('Vantagem atualizada com sucesso!');
+        setFormVantagem({ titulo: '', descricao: '', custo: '', foto: '' });
+        setVantagemEditando(null);
+        setDialogAberto(false);
+        fetchVantagens();
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Erro ao atualizar vantagem.');
+      }
+    } catch (error) {
+      toast.error('Erro de conexão ao atualizar vantagem.');
+    }
   };
 
   const handleDeletarVantagem = (id: number) => {
@@ -391,6 +408,9 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
                           src={vantagem.foto}
                           alt={vantagem.titulo}
                           className="w-16 h-16 rounded-lg object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = getFallbackImage(vantagem.id);
+                          }}
                         />
                         <div className="flex-1">
                           <p className="font-medium">{vantagem.titulo}</p>
@@ -467,6 +487,28 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
                         value={formVantagem.foto}
                         onChange={(e) => setFormVantagem({ ...formVantagem, foto: e.target.value })}
                       />
+                      <div className="mt-4">
+                        <Label className="text-sm text-gray-500 mb-2 block">Ou escolha uma foto pré-pronta:</Label>
+                        <div className="flex gap-2 overflow-x-auto pb-2">
+                          {[
+                            'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80',
+                            'https://images.unsplash.com/photo-1543168256-418811576931?w=400&q=80',
+                            'https://images.unsplash.com/photo-1513001900722-370f803f498d?w=400&q=80',
+                            'https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=400&q=80',
+                            'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=400&q=80'
+                          ].map((url, i) => (
+                            <img
+                              key={i}
+                              src={url}
+                              alt={`Opção ${i + 1}`}
+                              className={`w-16 h-16 object-cover rounded-md cursor-pointer border-2 transition-all ${
+                                formVantagem.foto === url ? 'border-blue-600 scale-105' : 'border-transparent hover:border-gray-300'
+                              }`}
+                              onClick={() => setFormVantagem({ ...formVantagem, foto: url })}
+                            />
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <DialogFooter>
@@ -491,6 +533,9 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
                       src={vantagem.foto}
                       alt={vantagem.titulo}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = getFallbackImage(vantagem.id);
+                      }}
                     />
                   </div>
                   <CardHeader>

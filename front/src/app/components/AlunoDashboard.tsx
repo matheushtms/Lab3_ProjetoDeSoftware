@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
+import { getFallbackImage } from './ui/utils';
 import { Separator } from './ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import {
@@ -27,16 +29,68 @@ interface AlunoDashboardProps {
   onUpdateUser?: (data: any) => void;
 }
 
-export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
+export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashboardProps) {
   const [activeTab, setActiveTab] = useState('visao-geral');
   const [editandoPerfil, setEditandoPerfil] = useState(false);
   const [extrato, setExtrato] = useState<any[]>([]);
+  const [vantagens, setVantagens] = useState<any[]>([]);
+  const [loadingResgate, setLoadingResgate] = useState<number | null>(null);
 
   useEffect(() => {
     if (userData && userData.id) {
       fetchExtrato();
     }
+    fetchVantagens();
   }, [userData]);
+
+  const fetchVantagens = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/api/vantagens');
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setVantagens(data);
+      } else {
+        console.error('Erro ao buscar vantagens:', data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar vantagens:', error);
+    }
+  };
+
+  const handleResgatar = async (vantagemId: number, custo: number) => {
+    if (alunoData.saldo < custo) {
+      toast.error('Saldo insuficiente!');
+      return;
+    }
+
+    setLoadingResgate(vantagemId);
+    try {
+      const res = await fetch('http://localhost:3001/api/vantagens/resgatar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          alunoId: alunoData.id,
+          vantagemId
+        })
+      });
+
+      if (res.ok) {
+        toast.success('Vantagem resgatada com sucesso! Verifique seu email.');
+        if (onUpdateUser) {
+          onUpdateUser({ ...alunoData, saldo: alunoData.saldo - custo });
+        }
+        fetchExtrato();
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Erro ao resgatar vantagem.');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Erro de conexão ao resgatar vantagem.');
+    } finally {
+      setLoadingResgate(null);
+    }
+  };
 
   const fetchExtrato = async () => {
     try {
@@ -285,15 +339,17 @@ export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
                     <div key={transacao.id}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex items-start gap-3 flex-1">
-                          <div className="p-2 rounded-full bg-green-100 text-green-600">
-                            <ArrowDownLeft className="w-4 h-4" />
+                          <div className={`p-2 rounded-full ${transacao.tipo === 'resgate' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                            {transacao.tipo === 'resgate' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownLeft className="w-4 h-4" />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-gray-900 text-sm">
                               {transacao.motivo}
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
-                              Enviado por: {transacao.professor?.nome}
+                              {transacao.tipo === 'resgate'
+                                ? `Resgatado na empresa: ${transacao.empresa}`
+                                : `Enviado por: ${transacao.professor?.nome}`}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
                               <Calendar className="w-3 h-3 text-gray-400" />
@@ -304,11 +360,11 @@ export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-green-600">
-                            +{transacao.valor.toLocaleString('pt-BR')}
+                          <p className={`font-semibold ${transacao.tipo === 'resgate' ? 'text-red-600' : 'text-green-600'}`}>
+                            {transacao.tipo === 'resgate' ? '' : '+'}{transacao.valor.toLocaleString('pt-BR')}
                           </p>
                           <Badge variant="outline" className="text-xs mt-1">
-                            recebido
+                            {transacao.tipo === 'resgate' ? 'resgatado' : 'recebido'}
                           </Badge>
                         </div>
                       </div>
@@ -323,14 +379,32 @@ export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
           {/* Vantagens Tab */}
           <TabsContent value="vantagens" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {vantagensDisponiveis.map((vantagem) => (
-                <Card key={vantagem.id} className="overflow-hidden">
-                  <div className="aspect-video w-full overflow-hidden bg-gray-100">
-                    <img
-                      src={vantagem.imagem}
-                      alt={vantagem.titulo}
-                      className="w-full h-full object-cover"
-                    />
+              {vantagens.length === 0 && (
+                <div className="col-span-full text-center text-gray-500 py-12">
+                  <p>Nenhuma vantagem cadastrada no momento.</p>
+                </div>
+              )}
+              {vantagens.map((vantagem) => {
+                const jaResgatado = extrato.some(item => item.tipo === 'resgate' && item.vantagemId === vantagem.id);
+                return (
+                <Card key={vantagem.id} className={`overflow-hidden transition-all ${jaResgatado ? 'opacity-60 grayscale' : ''}`}>
+                  <div className="aspect-video w-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                    {vantagem.imagem ? (
+                      <img
+                        src={vantagem.imagem}
+                        alt={vantagem.titulo}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = getFallbackImage(vantagem.id);
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src={getFallbackImage(vantagem.id)}
+                        alt={vantagem.titulo}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                   <CardHeader>
                     <div className="flex items-start justify-between gap-2">
@@ -340,15 +414,24 @@ export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
                         {vantagem.custo}
                       </Badge>
                     </div>
-                    <CardDescription>{vantagem.empresa}</CardDescription>
+                    <CardDescription>{vantagem.empresa?.nomeFantasia}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600 mb-4">{vantagem.descricao}</p>
                     <Button
                       className="w-full"
-                      disabled={alunoData.saldo < vantagem.custo}
+                      variant={jaResgatado ? "secondary" : "default"}
+                      disabled={jaResgatado || alunoData.saldo < vantagem.custo || loadingResgate === vantagem.id}
+                      onClick={() => handleResgatar(vantagem.id, vantagem.custo)}
                     >
-                      {alunoData.saldo >= vantagem.custo ? (
+                      {jaResgatado ? (
+                        <>
+                          <Gift className="w-4 h-4 mr-2" />
+                          Já Resgatado
+                        </>
+                      ) : loadingResgate === vantagem.id ? (
+                        'Processando...'
+                      ) : alunoData.saldo >= vantagem.custo ? (
                         <>
                           <Gift className="w-4 h-4 mr-2" />
                           Resgatar
@@ -359,7 +442,7 @@ export function AlunoDashboard({ onLogout, userData }: AlunoDashboardProps) {
                     </Button>
                   </CardContent>
                 </Card>
-              ))}
+              )})}
             </div>
           </TabsContent>
 

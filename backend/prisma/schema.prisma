@@ -22,6 +22,7 @@ model Aluno {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   transacoes     Transacao[] @relation("TransacoesRecebidas")
+  resgates       Resgate[]
 }
 
 model Professor {
@@ -61,4 +62,30 @@ model EmpresaParceira {
   responsavel  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  vantagens    Vantagem[]
+}
+
+model Vantagem {
+  id          Int      @id @default(autoincrement())
+  empresaId   Int
+  titulo      String
+  descricao   String   @db.Text
+  custo       Int
+  imagem      String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  empresa     EmpresaParceira @relation(fields: [empresaId], references: [id])
+  resgates    Resgate[]
+}
+
+model Resgate {
+  id          Int      @id @default(autoincrement())
+  alunoId     Int
+  vantagemId  Int
+  codigo      String   @unique
+  data        DateTime @default(now())
+
+  aluno       Aluno    @relation(fields: [alunoId], references: [id])
+  vantagem    Vantagem @relation(fields: [vantagemId], references: [id])
 }

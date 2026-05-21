@@ -363,11 +363,39 @@ function ProfessorSignupForm({ title, description, onSuccess }: FormHeaderProps)
     instituicao: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Cadastro Professor:', formData);
-    // Aqui você implementaria a lógica de cadastro
-    onSuccess();
+    if (formData.senha !== formData.confirmarSenha) {
+      alert('As senhas não coincidem!');
+      return;
+    }
+    try {
+      const response = await fetch('http://localhost:3001/api/professores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nome: formData.nome,
+          email: formData.email,
+          cpf: formData.cpf,
+          departamento: formData.departamento,
+          instituicao: formData.instituicao,
+          senha: formData.senha,
+        }),
+      });
+
+      if (response.ok) {
+        alert('Conta de professor criada com sucesso!');
+        onSuccess();
+      } else {
+        const errorData = await response.json();
+        alert(`Erro: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao conectar com o servidor.');
+    }
   };
 
   const handleChange = (field: keyof typeof formData, value: string) => {

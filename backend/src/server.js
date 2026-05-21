@@ -6,6 +6,7 @@ const alunoRoutes = require('./routes/alunoRoutes');
 const empresaRoutes = require('./routes/empresaRoutes');
 const professorRoutes = require('./routes/professorRoutes');
 const transacaoRoutes = require('./routes/transacaoRoutes');
+const vantagemRoutes = require('./routes/vantagemRoutes');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use('/api/alunos', alunoRoutes);
 app.use('/api/empresas', empresaRoutes);
 app.use('/api/professores', professorRoutes);
 app.use('/api/transacoes', transacaoRoutes);
+app.use('/api/vantagens', vantagemRoutes);
 
 const PORT = process.env.PORT || 3001;
 

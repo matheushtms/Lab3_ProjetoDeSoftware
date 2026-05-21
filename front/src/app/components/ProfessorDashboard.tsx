@@ -58,11 +58,6 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
       return;
     }
 
-    if (Number(valorEnvio) > userData.saldo) {
-      toast.error('Saldo insuficiente!');
-      return;
-    }
-
     setLoading(true);
     try {
       const res = await fetch('http://localhost:3001/api/transacoes/enviar', {
@@ -82,8 +77,7 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
         setMotivoEnvio('');
         setAlunoSelecionado('');
         
-        // Atualiza saldo local
-        onUpdateUser({ ...userData, saldo: userData.saldo - Number(valorEnvio) });
+        // Moedas são ilimitadas, não precisamos descontar o saldo.
         fetchExtrato();
       } else {
         const errorData = await res.json();
@@ -113,7 +107,7 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
           <div className="text-right">
             <p className="text-sm text-gray-500 font-medium">Saldo Disponível</p>
             <p className="text-2xl font-bold text-blue-600 flex items-center justify-end gap-1">
-              {userData?.saldo} <Coins className="w-5 h-5" />
+              ∞ <Coins className="w-5 h-5" />
             </p>
           </div>
           <Button variant="outline" onClick={onLogout} className="flex items-center gap-2">

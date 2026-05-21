@@ -23,29 +23,41 @@ export function LoginPage({ onNavigateToSignup, onLoginSuccess }: LoginPageProps
       if (activeTab === 'aluno') {
         const res = await fetch('http://localhost:3001/api/alunos');
         const alunos = await res.json();
-        const userExists = alunos.find((a: any) => a.email === email && a.senha === senha);
-        if (userExists) {
-          onLoginSuccess(activeTab, userExists);
+        if (res.ok && Array.isArray(alunos)) {
+          const userExists = alunos.find((a: any) => a.email === email && a.senha === senha);
+          if (userExists) {
+            onLoginSuccess(activeTab, userExists);
+          } else {
+            alert('Email não encontrado ou senha incorreta!');
+          }
         } else {
-          alert('Email não encontrado ou senha incorreta!');
+          alert('Erro ao buscar alunos do servidor.');
         }
       } else if (activeTab === 'empresa') {
         const res = await fetch('http://localhost:3001/api/empresas');
         const empresas = await res.json();
-        const userExists = empresas.find((e: any) => e.email === email && e.senha === senha);
-        if (userExists) {
-          onLoginSuccess(activeTab, userExists);
+        if (res.ok && Array.isArray(empresas)) {
+          const userExists = empresas.find((e: any) => e.email === email && e.senha === senha);
+          if (userExists) {
+            onLoginSuccess(activeTab, userExists);
+          } else {
+            alert('Email não encontrado ou senha incorreta!');
+          }
         } else {
-          alert('Email não encontrado ou senha incorreta!');
+          alert('Erro ao buscar empresas do servidor.');
         }
       } else if (activeTab === 'professor') {
         const res = await fetch('http://localhost:3001/api/professores');
         const professores = await res.json();
-        const userExists = professores.find((p: any) => p.email === email && p.senha === senha);
-        if (userExists) {
-          onLoginSuccess(activeTab, userExists);
+        if (res.ok && Array.isArray(professores)) {
+          const userExists = professores.find((p: any) => p.email === email && p.senha === senha);
+          if (userExists) {
+            onLoginSuccess(activeTab, userExists);
+          } else {
+            alert('Email não encontrado ou senha incorreta!');
+          }
         } else {
-          alert('Email não encontrado ou senha incorreta!');
+          alert('Erro ao buscar professores do servidor.');
         }
       }
     } catch (error) {
