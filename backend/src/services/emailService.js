@@ -10,18 +10,18 @@ const transporter = nodemailer.createTransport({
 
 const sendCoinTransferEmailToAluno = async (alunoEmail, alunoNome, professorNome, valor, motivo) => {
   const mailOptions = {
-    from: `"Sistema de Moedas" <${process.env.EMAIL_USER}>`,
+    from: `"Portal Universitario" <${process.env.EMAIL_USER}>`,
     to: alunoEmail,
-    subject: 'Você recebeu novas moedas! 🪙',
+    subject: 'Notificação: Você recebeu um novo reconhecimento acadêmico',
     html: `
       <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
         <h2 style="color: #4CAF50;">Olá, ${alunoNome}!</h2>
-        <p>Você acabou de receber <strong>${valor} moedas</strong> do professor <strong>${professorNome}</strong>.</p>
+        <p>Você acabou de receber <strong>${valor} pontos de reconhecimento</strong> do professor <strong>${professorNome}</strong>.</p>
         <p><strong>Motivo:</strong> ${motivo}</p>
         <br/>
         <p>Continue com o excelente trabalho!</p>
         <p>Atenciosamente,</p>
-        <p><strong>Equipe do Sistema de Moedas Universitárias</strong></p>
+        <p><strong>Equipe do Portal Acadêmico</strong></p>
       </div>
     `,
   };
@@ -36,18 +36,18 @@ const sendCoinTransferEmailToAluno = async (alunoEmail, alunoNome, professorNome
 
 const sendCoinTransferEmailToProfessor = async (professorEmail, professorNome, alunoNome, valor, motivo) => {
   const mailOptions = {
-    from: `"Sistema de Moedas" <${process.env.EMAIL_USER}>`,
+    from: `"Portal Universitario" <${process.env.EMAIL_USER}>`,
     to: professorEmail,
-    subject: 'Comprovante de envio de moedas 📤',
+    subject: 'Comprovante de envio de reconhecimento acadêmico',
     html: `
       <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
         <h2 style="color: #2196F3;">Olá, ${professorNome}!</h2>
-        <p>Seu envio de <strong>${valor} moedas</strong> para o aluno <strong>${alunoNome}</strong> foi realizado com sucesso.</p>
+        <p>Seu envio de <strong>${valor} pontos</strong> para o aluno <strong>${alunoNome}</strong> foi registrado no sistema.</p>
         <p><strong>Motivo registrado:</strong> ${motivo}</p>
         <br/>
-        <p>Obrigado por reconhecer o mérito dos seus alunos!</p>
+        <p>Agradecemos por incentivar o mérito dos seus alunos!</p>
         <p>Atenciosamente,</p>
-        <p><strong>Equipe do Sistema de Moedas Universitárias</strong></p>
+        <p><strong>Equipe do Portal Acadêmico</strong></p>
       </div>
     `,
   };
