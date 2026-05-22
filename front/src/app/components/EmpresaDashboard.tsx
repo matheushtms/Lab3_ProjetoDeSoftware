@@ -53,6 +53,7 @@ import {
   Phone,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface EmpresaDashboardProps {
   onLogout: () => void;
@@ -304,12 +305,12 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
             <div className="flex items-center gap-4">
               <motion.div 
                 whileHover={{ rotate: 15, scale: 1.1 }}
-                className="bg-primary/20 border border-primary/30 shadow-[0_0_15px_rgba(74,222,128,0.2)] p-2 rounded-lg"
+                className="shadow-[0_0_15px_rgba(74,222,128,0.2)] rounded-2xl overflow-hidden flex items-center justify-center w-12 h-12 bg-primary/10 border border-primary/20 p-1"
               >
-                <Building2 className="w-6 h-6 text-primary" />
+                <img src="/logo.png" alt="CoinEdu Logo" className="w-full h-full object-contain" />
               </motion.div>
               <div>
-                <h1 className="text-xl font-bold text-white drop-shadow-sm">Sistema de Moedas</h1>
+                <h1 className="text-xl font-bold text-white drop-shadow-sm">CoinEdu</h1>
                 <p className="text-sm text-white/60">Portal da Empresa</p>
               </div>
             </div>
@@ -406,6 +407,77 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
                         <p className="text-xs text-blue-300">
                           +20% em relação ao mês anterior
                         </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Gráficos */}
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <Card className={glassCardClass}>
+                      <CardHeader>
+                        <CardTitle className="text-white">Popularidade das Vantagens</CardTitle>
+                        <CardDescription className="text-white/60">Distribuição de resgates por vantagem</CardDescription>
+                      </CardHeader>
+                      <CardContent className="h-[300px] w-full pt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={vantagens.length > 0 ? vantagens.map(v => ({ name: v.titulo, value: v.totalResgates })) : [{ name: 'Nenhuma', value: 1 }]}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={60}
+                              outerRadius={80}
+                              paddingAngle={5}
+                              dataKey="value"
+                              animationDuration={2000}
+                            >
+                              {(vantagens.length > 0 ? vantagens : [{}]).map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={['#4ade80', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'][index % 5]} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }} 
+                              itemStyle={{ color: '#fff' }}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </CardContent>
+                    </Card>
+
+                    <Card className={glassCardClass}>
+                      <CardHeader>
+                        <CardTitle className="text-white">Evolução de Resgates</CardTitle>
+                        <CardDescription className="text-white/60">Resgates realizados nos últimos meses</CardDescription>
+                      </CardHeader>
+                      <CardContent className="h-[300px] w-full pt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart
+                            data={[
+                              { name: 'Fev', resgates: 5 },
+                              { name: 'Mar', resgates: 12 },
+                              { name: 'Abr', resgates: 8 },
+                              { name: 'Mai', resgates: 25 },
+                              { name: 'Jun', resgates: 40 },
+                              { name: 'Jul', resgates: 30 },
+                            ]}
+                            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                          >
+                            <defs>
+                              <linearGradient id="colorResgates" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                            <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.5)'}} />
+                            <YAxis stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.5)'}} />
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }} 
+                              itemStyle={{ color: '#fff' }}
+                            />
+                            <Area type="monotone" dataKey="resgates" stroke="#3b82f6" fillOpacity={1} fill="url(#colorResgates)" animationDuration={2000} />
+                          </AreaChart>
+                        </ResponsiveContainer>
                       </CardContent>
                     </Card>
                   </div>

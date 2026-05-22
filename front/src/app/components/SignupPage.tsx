@@ -41,12 +41,12 @@ export function SignupPage({ onBackToLogin }: SignupPageProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 relative z-10 bg-transparent">
+    <div className="min-h-screen flex flex-col p-4 sm:p-8 relative z-10 bg-transparent overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-        className="w-full max-w-6xl grid lg:grid-cols-2 bg-card/40 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden max-h-[90vh]"
+        className="w-full max-w-6xl grid lg:grid-cols-2 bg-card/40 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden my-auto"
       >
         {/* Lado esquerdo - Imagem e informações */}
         <div className="hidden lg:flex flex-col justify-center items-center p-12 relative overflow-hidden border-r border-white/10">
@@ -60,14 +60,14 @@ export function SignupPage({ onBackToLogin }: SignupPageProps) {
           >
             <div className="flex justify-center mb-6">
               <motion.div 
-                whileHover={{ scale: 1.1, rotate: -10 }}
-                className="bg-primary/20 backdrop-blur-md p-4 rounded-full border border-primary/30 shadow-[0_0_30px_rgba(74,222,128,0.3)]"
+                whileHover={{ scale: 1.1, rotate: -5 }}
+                className="bg-primary/10 backdrop-blur-md p-4 rounded-3xl border border-primary/20 shadow-[0_0_30px_rgba(74,222,128,0.3)] w-28 h-28 flex items-center justify-center overflow-hidden"
               >
-                <Coins className="w-16 h-16 text-primary" />
+                <img src="/logo.png" alt="CoinEdu Logo" className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
               </motion.div>
             </div>
 
-            <h1 className="text-4xl font-bold mb-4 text-white drop-shadow-md">Junte-se ao Sistema</h1>
+            <h1 className="text-4xl font-bold mb-4 text-white drop-shadow-md">Junte-se ao CoinEdu</h1>
             <p className="text-lg mb-8 text-white/80">
               Faça parte da comunidade de moedas universitárias
             </p>
@@ -107,12 +107,12 @@ export function SignupPage({ onBackToLogin }: SignupPageProps) {
         </div>
 
         {/* Lado direito - Formulário de cadastro */}
-        <div className="flex items-start justify-center p-8 bg-black/20 overflow-y-auto custom-scrollbar">
+        <div className="flex items-start justify-center p-8 bg-black/20">
           <div className="w-full max-w-md py-4">
             {/* Logo mobile */}
             <div className="lg:hidden flex justify-center mb-8">
-              <div className="bg-primary/20 p-4 rounded-full border border-primary/30 shadow-[0_0_20px_rgba(74,222,128,0.2)]">
-                <Coins className="w-12 h-12 text-primary" />
+              <div className="bg-primary/10 p-3 rounded-2xl border border-primary/20 shadow-[0_0_20px_rgba(74,222,128,0.2)] w-20 h-20 flex items-center justify-center overflow-hidden">
+                <img src="/logo.png" alt="CoinEdu Logo" className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
               </div>
             </div>
 

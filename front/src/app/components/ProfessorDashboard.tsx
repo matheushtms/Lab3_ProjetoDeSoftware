@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { LogOut, Coins, Send, History, User, BookOpen } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { toast } from 'sonner';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface ProfessorDashboardProps {
   onLogout: () => void;
@@ -110,12 +111,12 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
             <div className="flex items-center gap-4">
               <motion.div 
                 whileHover={{ rotate: 15, scale: 1.1 }}
-                className="bg-primary/20 border border-primary/30 shadow-[0_0_15px_rgba(74,222,128,0.2)] p-2 rounded-lg"
+                className="shadow-[0_0_15px_rgba(74,222,128,0.2)] rounded-2xl overflow-hidden flex items-center justify-center w-12 h-12 bg-primary/10 border border-primary/20 p-1"
               >
-                <BookOpen className="w-6 h-6 text-primary" />
+                <img src="/logo.png" alt="CoinEdu Logo" className="w-full h-full object-contain" />
               </motion.div>
               <div>
-                <h1 className="text-xl font-bold text-white drop-shadow-sm">Sistema de Moedas</h1>
+                <h1 className="text-xl font-bold text-white drop-shadow-sm">CoinEdu</h1>
                 <p className="text-sm text-white/60">Portal do Professor</p>
               </div>
             </div>
@@ -155,7 +156,11 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
             </TabsTrigger>
             <TabsTrigger value="extrato" className="flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all">
               <History className="w-4 h-4 mr-2" />
-              Histórico de Envios
+              Histórico
+            </TabsTrigger>
+            <TabsTrigger value="estatisticas" className="flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all">
+              <History className="w-4 h-4 mr-2" />
+              Estatísticas
             </TabsTrigger>
           </TabsList>
 
@@ -292,6 +297,71 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
                           ))}
                         </div>
                       )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              )}
+
+              {activeTab === 'estatisticas' && (
+                <TabsContent value="estatisticas" className="mt-0 space-y-6" forceMount>
+                  <Card className={glassCardClass}>
+                    <CardHeader>
+                      <CardTitle className="text-white">Envio de Moedas (Últimos Meses)</CardTitle>
+                      <CardDescription className="text-white/60">Evolução de engajamento do professor</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[250px] w-full pt-4">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={[
+                            { name: 'Fev', enviadas: 200 },
+                            { name: 'Mar', enviadas: 450 },
+                            { name: 'Abr', enviadas: 300 },
+                            { name: 'Mai', enviadas: 600 },
+                            { name: 'Jun', enviadas: 800 },
+                            { name: 'Jul', enviadas: 500 },
+                          ]}
+                          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                          <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.5)'}} />
+                          <YAxis stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.5)'}} />
+                          <Tooltip 
+                            contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }} 
+                            itemStyle={{ color: '#fff' }}
+                          />
+                          <Line type="monotone" dataKey="enviadas" stroke="#4ade80" strokeWidth={3} dot={{ fill: '#4ade80', strokeWidth: 2, r: 4 }} activeDot={{ r: 8 }} animationDuration={2000} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+
+                  <Card className={glassCardClass}>
+                    <CardHeader>
+                      <CardTitle className="text-white">Alunos Mais Reconhecidos</CardTitle>
+                      <CardDescription className="text-white/60">Top 5 alunos que mais receberam moedas de você</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[250px] w-full pt-4">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={[
+                            { name: 'João Silva', moedas: 120 },
+                            { name: 'Maria Souza', moedas: 95 },
+                            { name: 'Pedro Costa', moedas: 80 },
+                            { name: 'Ana Rosa', moedas: 60 },
+                            { name: 'Lucas P.', moedas: 50 },
+                          ]}
+                          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                          <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.5)'}} />
+                          <YAxis stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.5)'}} />
+                          <Tooltip 
+                            contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }} 
+                            cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                          />
+                          <Bar dataKey="moedas" fill="#4ade80" radius={[4, 4, 0, 0]} animationDuration={2000} />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </CardContent>
                   </Card>
                 </TabsContent>

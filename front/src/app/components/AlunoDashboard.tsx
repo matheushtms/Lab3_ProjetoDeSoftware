@@ -21,6 +21,10 @@ import {
   MapPin,
   GraduationCap
 } from 'lucide-react';
+import { 
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar 
+} from 'recharts';
 import { EditarPerfilAluno } from './EditarPerfilAluno';
 
 interface AlunoDashboardProps {
@@ -162,12 +166,12 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
             <div className="flex items-center gap-4">
               <motion.div 
                 whileHover={{ rotate: 15, scale: 1.1 }}
-                className="bg-primary/20 border border-primary/30 shadow-[0_0_15px_rgba(74,222,128,0.2)] p-2 rounded-lg"
+                className="shadow-[0_0_15px_rgba(74,222,128,0.2)] rounded-2xl overflow-hidden flex items-center justify-center w-12 h-12 bg-primary/10 border border-primary/20 p-1"
               >
-                <Coins className="w-6 h-6 text-primary" />
+                <img src="/logo.png" alt="CoinEdu Logo" className="w-full h-full object-contain" />
               </motion.div>
               <div>
-                <h1 className="text-xl font-bold text-white drop-shadow-sm">Sistema de Moedas</h1>
+                <h1 className="text-xl font-bold text-white drop-shadow-sm">CoinEdu</h1>
                 <p className="text-sm text-white/60">Portal do Aluno</p>
               </div>
             </div>
@@ -241,30 +245,75 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
 
                     <Card className={glassCardClass}>
                       <CardHeader>
-                        <CardDescription className="text-white/70">Estatísticas Mensais</CardDescription>
+                        <CardTitle className="text-white">Fluxo de Moedas</CardTitle>
+                        <CardDescription className="text-white/70">Recebimentos vs Gastos nos últimos meses</CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-6">
-                        <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm text-white/60">Recebido (mês)</span>
-                            <span className="text-lg font-bold text-primary flex items-center"><ArrowDownLeft className="w-4 h-4 mr-1"/>+1.200</span>
-                          </div>
-                          <div className="w-full bg-black/40 h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-primary h-full w-[80%] rounded-full"></div>
-                          </div>
-                        </div>
-                        <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm text-white/60">Gasto (mês)</span>
-                            <span className="text-lg font-bold text-red-400 flex items-center"><ArrowUpRight className="w-4 h-4 mr-1"/>-350</span>
-                          </div>
-                          <div className="w-full bg-black/40 h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-red-400 h-full w-[30%] rounded-full"></div>
-                          </div>
-                        </div>
+                      <CardContent className="h-[250px] w-full pt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart
+                            data={[
+                              { name: 'Jan', recebido: 400, gasto: 240 },
+                              { name: 'Fev', recebido: 300, gasto: 139 },
+                              { name: 'Mar', recebido: 200, gasto: 980 },
+                              { name: 'Abr', recebido: 278, gasto: 390 },
+                              { name: 'Mai', recebido: 189, gasto: 480 },
+                              { name: 'Jun', recebido: 239, gasto: 380 },
+                              { name: 'Jul', recebido: 349, gasto: 430 },
+                            ]}
+                            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                          >
+                            <defs>
+                              <linearGradient id="colorRecebido" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#4ade80" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#4ade80" stopOpacity={0}/>
+                              </linearGradient>
+                              <linearGradient id="colorGasto" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#f87171" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#f87171" stopOpacity={0}/>
+                              </linearGradient>
+                            </defs>
+                            <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.5)'}} />
+                            <YAxis stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.5)'}} />
+                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }} 
+                              itemStyle={{ color: '#fff' }}
+                            />
+                            <Area type="monotone" dataKey="recebido" stroke="#4ade80" fillOpacity={1} fill="url(#colorRecebido)" animationDuration={2000} />
+                            <Area type="monotone" dataKey="gasto" stroke="#f87171" fillOpacity={1} fill="url(#colorGasto)" animationDuration={2000} />
+                          </AreaChart>
+                        </ResponsiveContainer>
                       </CardContent>
                     </Card>
                   </div>
+                  
+                  {/* Gráfico de Radar para Áreas de Interesse */}
+                  <Card className={glassCardClass}>
+                    <CardHeader>
+                      <CardTitle className="text-white">Perfil de Resgates</CardTitle>
+                      <CardDescription className="text-white/70">Suas categorias favoritas de vantagens</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[300px] w-full flex items-center justify-center">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={[
+                          { subject: 'Alimentação', A: 120, fullMark: 150 },
+                          { subject: 'Transporte', A: 98, fullMark: 150 },
+                          { subject: 'Educação', A: 86, fullMark: 150 },
+                          { subject: 'Tecnologia', A: 99, fullMark: 150 },
+                          { subject: 'Lazer', A: 85, fullMark: 150 },
+                          { subject: 'Saúde', A: 65, fullMark: 150 },
+                        ]}>
+                          <PolarGrid stroke="rgba(255,255,255,0.2)" />
+                          <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 12 }} />
+                          <PolarRadiusAxis angle={30} domain={[0, 150]} stroke="rgba(255,255,255,0.3)" />
+                          <Radar name="Aluno" dataKey="A" stroke="#4ade80" fill="#4ade80" fillOpacity={0.5} animationDuration={2500} />
+                          <Tooltip 
+                              contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }} 
+                            />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
 
                   {/* Histórico de Transações */}
                   <Card className={glassCardClass}>
