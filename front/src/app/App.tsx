@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { LoginPage } from './components/LoginPage';
 import { SignupPage } from './components/SignupPage';
 import { AlunoDashboard } from './components/AlunoDashboard';
@@ -13,8 +14,31 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   return (
-    <div className="size-full">
-      <Toaster />
+    <div className="relative min-h-screen w-full overflow-hidden bg-background text-foreground">
+      {/* Animated Background Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 100, 0],
+            y: [0, -50, 0],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-primary/20 blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.5, 1],
+            x: [0, -100, 0],
+            y: [0, 100, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[40%] -right-[10%] w-[40vw] h-[40vw] rounded-full bg-secondary/30 blur-[120px]"
+        />
+      </div>
+
+      <div className="relative z-10 size-full min-h-screen">
+        <Toaster />
       {currentScreen === 'login' && (
         <LoginPage
           onNavigateToSignup={() => setCurrentScreen('signup')}
@@ -54,6 +78,7 @@ export default function App() {
           onUpdateUser={(dados) => setCurrentUser({ ...dados })}
         />
       )}
+    </div>
     </div>
   );
 }

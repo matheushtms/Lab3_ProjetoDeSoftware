@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -93,142 +94,169 @@ export function LoginPage({ onNavigateToSignup, onLoginSuccess }: LoginPageProps
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
-      {/* Lado esquerdo - Imagem e informações */}
-      <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-blue-600 to-purple-700 text-white p-12 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <ImageWithFallback 
-            src="https://images.unsplash.com/photo-1565372521778-8d8235695f8a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1bml2ZXJzaXR5JTIwc3R1ZGVudHMlMjBjb2luc3xlbnwxfHx8fDE3NzkxNTAwMjV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-            alt="University background"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        <div className="relative z-10 max-w-md text-center">
-          <div className="flex justify-center mb-6">
-            <div className="bg-white/20 backdrop-blur-sm p-4 rounded-full">
-              <Coins className="w-16 h-16" />
-            </div>
-          </div>
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 relative z-10 bg-transparent">
+      <motion.div 
+        initial={{ opacity: 0, y: 50, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+        className="w-full max-w-6xl grid lg:grid-cols-2 bg-card/40 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+      >
+        {/* Lado esquerdo - Imagem e informações */}
+        <div className="hidden lg:flex flex-col justify-center items-center p-12 relative overflow-hidden border-r border-white/10">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/40 mix-blend-overlay"></div>
           
-          <h1 className="text-4xl font-bold mb-4">Sistema de Moedas Universitárias</h1>
-          <p className="text-lg mb-8 text-white/90">
-            Reconheça o mérito, troque por vantagens e fortaleça o aprendizado
-          </p>
-          
-          <div className="space-y-4 text-left">
-            <div className="flex items-start gap-3">
-              <GraduationCap className="w-6 h-6 mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold mb-1">Para Alunos</h3>
-                <p className="text-sm text-white/80">Receba moedas por mérito e troque por vantagens exclusivas</p>
-              </div>
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="relative z-10 max-w-md text-center"
+          >
+            <div className="flex justify-center mb-6">
+              <motion.div 
+                whileHover={{ scale: 1.1, rotate: 10 }}
+                className="bg-primary/20 backdrop-blur-md p-4 rounded-full border border-primary/30 shadow-[0_0_30px_rgba(74,222,128,0.3)]"
+              >
+                <Coins className="w-16 h-16 text-primary" />
+              </motion.div>
             </div>
             
-            <div className="flex items-start gap-3">
-              <BookOpen className="w-6 h-6 mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold mb-1">Para Professores</h3>
-                <p className="text-sm text-white/80">Distribua moedas e incentive o desenvolvimento acadêmico</p>
-              </div>
-            </div>
+            <h1 className="text-4xl font-bold mb-4 text-white drop-shadow-md">Sistema de Moedas Universitárias</h1>
+            <p className="text-lg mb-8 text-white/80">
+              Reconheça o mérito, troque por vantagens e fortaleça o aprendizado
+            </p>
             
-            <div className="flex items-start gap-3">
-              <Building2 className="w-6 h-6 mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold mb-1">Para Empresas</h3>
-                <p className="text-sm text-white/80">Ofereça vantagens e conecte-se com a comunidade universitária</p>
-              </div>
+            <div className="space-y-6 text-left">
+              <motion.div whileHover={{ x: 10 }} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-default">
+                <div className="bg-primary/20 p-2 rounded-lg">
+                  <GraduationCap className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1 text-white">Para Alunos</h3>
+                  <p className="text-sm text-white/70">Receba moedas por mérito e troque por vantagens exclusivas</p>
+                </div>
+              </motion.div>
+              
+              <motion.div whileHover={{ x: 10 }} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-default">
+                <div className="bg-primary/20 p-2 rounded-lg">
+                  <BookOpen className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1 text-white">Para Professores</h3>
+                  <p className="text-sm text-white/70">Distribua moedas e incentive o desenvolvimento acadêmico</p>
+                </div>
+              </motion.div>
+              
+              <motion.div whileHover={{ x: 10 }} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-default">
+                <div className="bg-primary/20 p-2 rounded-lg">
+                  <Building2 className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1 text-white">Para Empresas</h3>
+                  <p className="text-sm text-white/70">Ofereça vantagens e conecte-se com a comunidade universitária</p>
+                </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
 
-      {/* Lado direito - Formulário de login */}
-      <div className="flex items-center justify-center p-8 bg-gray-50">
-        <div className="w-full max-w-md">
-          {/* Logo mobile */}
-          <div className="lg:hidden flex justify-center mb-8">
-            <div className="bg-gradient-to-br from-blue-600 to-purple-700 p-4 rounded-full">
-              <Coins className="w-12 h-12 text-white" />
+        {/* Lado direito - Formulário de login */}
+        <div className="flex items-center justify-center p-8 bg-black/20">
+          <div className="w-full max-w-md">
+            {/* Logo mobile */}
+            <div className="lg:hidden flex justify-center mb-8">
+              <div className="bg-primary/20 p-4 rounded-full border border-primary/30 shadow-[0_0_20px_rgba(74,222,128,0.2)]">
+                <Coins className="w-12 h-12 text-primary" />
+              </div>
             </div>
-          </div>
 
-          <Card className="border-0 shadow-xl">
-            <CardHeader className="space-y-1 text-center">
-              <CardTitle className="text-2xl">Bem-vindo</CardTitle>
-              <CardDescription>
-                Selecione seu tipo de acesso e faça login
-              </CardDescription>
-            </CardHeader>
-            
-            <CardContent>
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-6">
-                  <TabsTrigger value="aluno" className="text-xs sm:text-sm">
-                    <GraduationCap className="w-4 h-4 mr-1" />
-                    Aluno
-                  </TabsTrigger>
-                  <TabsTrigger value="professor" className="text-xs sm:text-sm">
-                    <BookOpen className="w-4 h-4 mr-1" />
-                    Professor
-                  </TabsTrigger>
-                  <TabsTrigger value="empresa" className="text-xs sm:text-sm">
-                    <Building2 className="w-4 h-4 mr-1" />
-                    Empresa
-                  </TabsTrigger>
-                </TabsList>
+            <Card className="border-0 shadow-none bg-transparent">
+              <CardHeader className="space-y-1 text-center">
+                <CardTitle className="text-3xl font-bold text-white">Bem-vindo</CardTitle>
+                <CardDescription className="text-white/60">
+                  Selecione seu tipo de acesso e faça login
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent>
+                <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)} className="w-full">
+                  <TabsList className="grid w-full grid-cols-3 mb-8 bg-white/5 p-1 rounded-xl">
+                    <TabsTrigger value="aluno" className="text-xs sm:text-sm rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <GraduationCap className="w-4 h-4 mr-2" />
+                      Aluno
+                    </TabsTrigger>
+                    <TabsTrigger value="professor" className="text-xs sm:text-sm rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Professor
+                    </TabsTrigger>
+                    <TabsTrigger value="empresa" className="text-xs sm:text-sm rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Building2 className="w-4 h-4 mr-2" />
+                      Empresa
+                    </TabsTrigger>
+                  </TabsList>
 
-                <TabsContent value="aluno">
-                  <LoginForm
-                    title={getTitleByTab()}
-                    description={getDescriptionByTab()}
-                    email={email}
-                    senha={senha}
-                    setEmail={setEmail}
-                    setSenha={setSenha}
-                    handleLogin={handleLogin}
-                  />
-                </TabsContent>
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <TabsContent value="aluno" className="mt-0">
+                      <LoginForm
+                        title={getTitleByTab()}
+                        description={getDescriptionByTab()}
+                        email={email}
+                        senha={senha}
+                        setEmail={setEmail}
+                        setSenha={setSenha}
+                        handleLogin={handleLogin}
+                      />
+                    </TabsContent>
 
-                <TabsContent value="professor">
-                  <LoginForm
-                    title={getTitleByTab()}
-                    description={getDescriptionByTab()}
-                    email={email}
-                    senha={senha}
-                    setEmail={setEmail}
-                    setSenha={setSenha}
-                    handleLogin={handleLogin}
-                  />
-                </TabsContent>
+                    <TabsContent value="professor" className="mt-0">
+                      <LoginForm
+                        title={getTitleByTab()}
+                        description={getDescriptionByTab()}
+                        email={email}
+                        senha={senha}
+                        setEmail={setEmail}
+                        setSenha={setSenha}
+                        handleLogin={handleLogin}
+                      />
+                    </TabsContent>
 
-                <TabsContent value="empresa">
-                  <LoginForm
-                    title={getTitleByTab()}
-                    description={getDescriptionByTab()}
-                    email={email}
-                    senha={senha}
-                    setEmail={setEmail}
-                    setSenha={setSenha}
-                    handleLogin={handleLogin}
-                  />
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+                    <TabsContent value="empresa" className="mt-0">
+                      <LoginForm
+                        title={getTitleByTab()}
+                        description={getDescriptionByTab()}
+                        email={email}
+                        senha={senha}
+                        setEmail={setEmail}
+                        setSenha={setSenha}
+                        handleLogin={handleLogin}
+                      />
+                    </TabsContent>
+                  </motion.div>
+                </Tabs>
+              </CardContent>
+            </Card>
 
-          <p className="text-center text-sm text-gray-600 mt-6">
-            Não tem uma conta?{' '}
-            <button
-              onClick={onNavigateToSignup}
-              className="text-blue-600 hover:underline font-medium"
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-center text-sm text-white/60 mt-8"
             >
-              Cadastre-se aqui
-            </button>
-          </p>
+              Não tem uma conta?{' '}
+              <button
+                onClick={onNavigateToSignup}
+                className="text-primary hover:text-primary/80 hover:underline font-medium transition-colors"
+              >
+                Cadastre-se aqui
+              </button>
+            </motion.p>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -253,14 +281,14 @@ function LoginForm({
   handleLogin 
 }: LoginFormProps) {
   return (
-    <form onSubmit={handleLogin} className="space-y-4">
-      <div className="space-y-2 mb-4">
-        <h3 className="font-semibold text-lg">Login - {title}</h3>
-        <p className="text-sm text-gray-600">{description}</p>
+    <form onSubmit={handleLogin} className="space-y-5">
+      <div className="space-y-2 mb-6 text-center">
+        <h3 className="font-semibold text-xl text-white">Login - {title}</h3>
+        <p className="text-sm text-white/60">{description}</p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email" className="text-white/80">Email</Label>
         <Input
           id="email"
           type="email"
@@ -268,15 +296,16 @@ function LoginForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          className="bg-black/20 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-primary focus-visible:border-primary transition-all"
         />
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="senha">Senha</Label>
+          <Label htmlFor="senha" className="text-white/80">Senha</Label>
           <button 
             type="button" 
-            className="text-sm text-blue-600 hover:underline"
+            className="text-sm text-primary hover:text-primary/80 hover:underline transition-colors"
           >
             Esqueceu a senha?
           </button>
@@ -288,12 +317,15 @@ function LoginForm({
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
           required
+          className="bg-black/20 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-primary focus-visible:border-primary transition-all"
         />
       </div>
 
-      <Button type="submit" className="w-full mt-6">
-        Entrar
-      </Button>
+      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="pt-4">
+        <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(74,222,128,0.4)]">
+          Entrar
+        </Button>
+      </motion.div>
     </form>
   );
 }

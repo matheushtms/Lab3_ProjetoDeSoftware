@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { EditarPerfilEmpresa } from './EditarPerfilEmpresa';
+import { motion, AnimatePresence } from 'motion/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { getFallbackImage } from './ui/utils';
@@ -50,7 +51,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  Calendar
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -288,439 +288,527 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
     );
   }
 
+  const glassCardClass = "bg-card/40 backdrop-blur-2xl border-white/10 shadow-xl";
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-transparent text-white relative z-10">
       {/* Header */}
-      <header className="bg-white border-b">
+      <motion.header 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+        className="bg-card/30 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="bg-gradient-to-br from-blue-600 to-purple-700 p-2 rounded-lg">
-                <Building2 className="w-6 h-6 text-white" />
-              </div>
+              <motion.div 
+                whileHover={{ rotate: 15, scale: 1.1 }}
+                className="bg-primary/20 border border-primary/30 shadow-[0_0_15px_rgba(74,222,128,0.2)] p-2 rounded-lg"
+              >
+                <Building2 className="w-6 h-6 text-primary" />
+              </motion.div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Sistema de Moedas</h1>
-                <p className="text-sm text-gray-500">Portal da Empresa</p>
+                <h1 className="text-xl font-bold text-white drop-shadow-sm">Sistema de Moedas</h1>
+                <p className="text-sm text-white/60">Portal da Empresa</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-900">{empresaData.nome}</p>
-                <p className="text-xs text-gray-500">{empresaData.setor}</p>
+                <p className="text-sm font-medium text-white">{empresaData.nome}</p>
+                <p className="text-xs text-white/60">{empresaData.setor}</p>
               </div>
-              <Avatar>
-                <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-700 text-white">
+              <Avatar className="ring-2 ring-primary/30 shadow-[0_0_10px_rgba(74,222,128,0.2)]">
+                <AvatarFallback className="bg-primary/20 text-primary font-bold">
                   {empresaData.nome.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <Button variant="outline" size="sm" onClick={onLogout}>
+              <Button variant="outline" size="sm" onClick={onLogout} className="border-white/20 text-white hover:bg-white/10 hover:text-white transition-colors bg-white/5">
                 <LogOut className="w-4 h-4 mr-2" />
                 Sair
               </Button>
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="mb-8">
-            <TabsTrigger value="visao-geral">
+          <TabsList className="mb-8 bg-black/20 border border-white/5 p-1 rounded-xl">
+            <TabsTrigger value="visao-geral" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all">
               <TrendingUp className="w-4 h-4 mr-2" />
               Visão Geral
             </TabsTrigger>
-            <TabsTrigger value="vantagens">
+            <TabsTrigger value="vantagens" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all">
               <Gift className="w-4 h-4 mr-2" />
               Minhas Vantagens
             </TabsTrigger>
-            <TabsTrigger value="resgates">
+            <TabsTrigger value="resgates" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all">
               <Users className="w-4 h-4 mr-2" />
               Resgates
             </TabsTrigger>
-            <TabsTrigger value="perfil">
+            <TabsTrigger value="perfil" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all">
               <Building2 className="w-4 h-4 mr-2" />
               Perfil da Empresa
             </TabsTrigger>
           </TabsList>
 
-          {/* Visão Geral Tab */}
-          <TabsContent value="visao-geral" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-3">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total de Vantagens</CardTitle>
-                  <Gift className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{vantagens.length}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {vantagensAtivas} ativas
-                  </p>
-                </CardContent>
-              </Card>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Visão Geral Tab */}
+              {activeTab === 'visao-geral' && (
+                <TabsContent value="visao-geral" className="space-y-6 mt-0" forceMount>
+                  <div className="grid gap-6 md:grid-cols-3">
+                    <Card className={`${glassCardClass} relative overflow-hidden bg-gradient-to-br from-primary/20 to-transparent`}>
+                      <div className="absolute -right-10 -top-10 w-32 h-32 bg-primary/20 rounded-full blur-[40px]"></div>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                        <CardTitle className="text-sm font-medium text-white/80">Total de Vantagens</CardTitle>
+                        <Gift className="h-4 w-4 text-primary" />
+                      </CardHeader>
+                      <CardContent className="relative z-10">
+                        <div className="text-3xl font-bold text-white">{vantagens.length}</div>
+                        <p className="text-xs text-white/60">
+                          {vantagensAtivas} ativas
+                        </p>
+                      </CardContent>
+                    </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total de Resgates</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totalResgates}</div>
-                  <p className="text-xs text-muted-foreground">
-                    Todos os tempos
-                  </p>
-                </CardContent>
-              </Card>
+                    <Card className={`${glassCardClass} relative overflow-hidden bg-gradient-to-br from-secondary/20 to-transparent`}>
+                      <div className="absolute -right-10 -top-10 w-32 h-32 bg-secondary/20 rounded-full blur-[40px]"></div>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                        <CardTitle className="text-sm font-medium text-white/80">Total de Resgates</CardTitle>
+                        <Users className="h-4 w-4 text-secondary-foreground" />
+                      </CardHeader>
+                      <CardContent className="relative z-10">
+                        <div className="text-3xl font-bold text-white">{totalResgates}</div>
+                        <p className="text-xs text-white/60">
+                          Todos os tempos
+                        </p>
+                      </CardContent>
+                    </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Resgates Este Mês</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">12</div>
-                  <p className="text-xs text-muted-foreground">
-                    +20% em relação ao mês anterior
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+                    <Card className={`${glassCardClass} relative overflow-hidden bg-gradient-to-br from-blue-500/20 to-transparent`}>
+                      <div className="absolute -right-10 -top-10 w-32 h-32 bg-blue-500/20 rounded-full blur-[40px]"></div>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                        <CardTitle className="text-sm font-medium text-white/80">Resgates Este Mês</CardTitle>
+                        <TrendingUp className="h-4 w-4 text-blue-400" />
+                      </CardHeader>
+                      <CardContent className="relative z-10">
+                        <div className="text-3xl font-bold text-white">12</div>
+                        <p className="text-xs text-blue-300">
+                          +20% em relação ao mês anterior
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
 
-            {/* Vantagens mais populares */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Vantagens Mais Resgatadas</CardTitle>
-                <CardDescription>Top 3 vantagens por número de resgates</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {vantagens
-                    .sort((a, b) => b.totalResgates - a.totalResgates)
-                    .slice(0, 3)
-                    .map((vantagem, index) => (
-                      <div key={vantagem.id} className="flex items-center gap-4">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-700 text-white font-bold">
-                          {index + 1}
-                        </div>
-                        <img
-                          src={vantagem.foto}
-                          alt={vantagem.titulo}
-                          className="w-16 h-16 rounded-lg object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = getFallbackImage(vantagem.id);
-                          }}
-                        />
-                        <div className="flex-1">
-                          <p className="font-medium">{vantagem.titulo}</p>
-                          <p className="text-sm text-gray-500">{vantagem.totalResgates} resgates</p>
-                        </div>
-                        <Badge variant={vantagem.ativa ? 'default' : 'secondary'}>
-                          {vantagem.ativa ? 'Ativa' : 'Inativa'}
-                        </Badge>
+                  {/* Vantagens mais populares */}
+                  <Card className={glassCardClass}>
+                    <CardHeader>
+                      <CardTitle className="text-white">Vantagens Mais Resgatadas</CardTitle>
+                      <CardDescription className="text-white/60">Top 3 vantagens por número de resgates</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {vantagens.length === 0 ? (
+                           <div className="text-center py-8">
+                             <p className="text-white/60">Nenhuma vantagem encontrada.</p>
+                           </div>
+                        ) : (
+                          vantagens
+                            .sort((a, b) => b.totalResgates - a.totalResgates)
+                            .slice(0, 3)
+                            .map((vantagem, index) => (
+                              <motion.div 
+                                key={vantagem.id} 
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:bg-white/5 transition-colors"
+                              >
+                                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 border border-primary/30 text-primary font-bold shadow-[0_0_10px_rgba(74,222,128,0.2)]">
+                                  {index + 1}
+                                </div>
+                                <img
+                                  src={vantagem.foto}
+                                  alt={vantagem.titulo}
+                                  className="w-16 h-16 rounded-lg object-cover border border-white/10"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = getFallbackImage(vantagem.id);
+                                  }}
+                                />
+                                <div className="flex-1">
+                                  <p className="font-medium text-white">{vantagem.titulo}</p>
+                                  <p className="text-sm text-primary">{vantagem.totalResgates} resgates</p>
+                                </div>
+                                <Badge variant="outline" className={`border-0 ${vantagem.ativa ? 'bg-primary/20 text-primary' : 'bg-white/10 text-white/60'}`}>
+                                  {vantagem.ativa ? 'Ativa' : 'Inativa'}
+                                </Badge>
+                              </motion.div>
+                            ))
+                        )}
                       </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              )}
 
-          {/* Vantagens Tab */}
-          <TabsContent value="vantagens" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-2xl font-bold">Gerenciar Vantagens</h2>
-                <p className="text-sm text-gray-500">Adicione, edite ou remova vantagens</p>
-              </div>
-              <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
-                <DialogTrigger asChild>
-                  <Button onClick={abrirDialogAdicionar}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Nova Vantagem
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>
-                      {vantagemEditando ? 'Editar Vantagem' : 'Nova Vantagem'}
-                    </DialogTitle>
-                    <DialogDescription>
-                      Preencha os dados da vantagem que deseja oferecer
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="titulo">Título da Vantagem</Label>
-                      <Input
-                        id="titulo"
-                        placeholder="Ex: Almoço Grátis"
-                        value={formVantagem.titulo}
-                        onChange={(e) => setFormVantagem({ ...formVantagem, titulo: e.target.value })}
-                      />
+              {/* Vantagens Tab */}
+              {activeTab === 'vantagens' && (
+                <TabsContent value="vantagens" className="space-y-6 mt-0" forceMount>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">Gerenciar Vantagens</h2>
+                      <p className="text-sm text-white/60">Adicione, edite ou remova vantagens</p>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="descricao">Descrição</Label>
-                      <Textarea
-                        id="descricao"
-                        placeholder="Descreva a vantagem oferecida"
-                        value={formVantagem.descricao}
-                        onChange={(e) => setFormVantagem({ ...formVantagem, descricao: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="custo">Custo em Moedas</Label>
-                      <Input
-                        id="custo"
-                        type="number"
-                        placeholder="Ex: 200"
-                        value={formVantagem.custo}
-                        onChange={(e) => setFormVantagem({ ...formVantagem, custo: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="foto">URL da Foto</Label>
-                      <Input
-                        id="foto"
-                        type="url"
-                        placeholder="https://exemplo.com/imagem.jpg"
-                        value={formVantagem.foto}
-                        onChange={(e) => setFormVantagem({ ...formVantagem, foto: e.target.value })}
-                      />
-                      <div className="mt-4">
-                        <Label className="text-sm text-gray-500 mb-2 block">Ou escolha uma foto pré-pronta:</Label>
-                        <div className="flex gap-2 overflow-x-auto pb-2">
-                          {[
-                            'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80',
-                            'https://images.unsplash.com/photo-1543168256-418811576931?w=400&q=80',
-                            'https://images.unsplash.com/photo-1513001900722-370f803f498d?w=400&q=80',
-                            'https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=400&q=80',
-                            'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=400&q=80'
-                          ].map((url, i) => (
-                            <img
-                              key={i}
-                              src={url}
-                              alt={`Opção ${i + 1}`}
-                              className={`w-16 h-16 object-cover rounded-md cursor-pointer border-2 transition-all ${
-                                formVantagem.foto === url ? 'border-blue-600 scale-105' : 'border-transparent hover:border-gray-300'
-                              }`}
-                              onClick={() => setFormVantagem({ ...formVantagem, foto: url })}
+                    <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
+                      <DialogTrigger asChild>
+                        <Button onClick={abrirDialogAdicionar} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(74,222,128,0.4)]">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Nova Vantagem
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl bg-[#041f10]/95 backdrop-blur-3xl border-white/10 text-white shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                        <DialogHeader>
+                          <DialogTitle className="text-white">
+                            {vantagemEditando ? 'Editar Vantagem' : 'Nova Vantagem'}
+                          </DialogTitle>
+                          <DialogDescription className="text-white/60">
+                            Preencha os dados da vantagem que deseja oferecer
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="titulo" className="text-white/80">Título da Vantagem</Label>
+                            <Input
+                              id="titulo"
+                              placeholder="Ex: Almoço Grátis"
+                              value={formVantagem.titulo}
+                              onChange={(e) => setFormVantagem({ ...formVantagem, titulo: e.target.value })}
+                              className="bg-black/40 border-white/10 text-white focus-visible:ring-primary"
                             />
-                          ))}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="descricao" className="text-white/80">Descrição</Label>
+                            <Textarea
+                              id="descricao"
+                              placeholder="Descreva a vantagem oferecida"
+                              value={formVantagem.descricao}
+                              onChange={(e) => setFormVantagem({ ...formVantagem, descricao: e.target.value })}
+                              className="bg-black/40 border-white/10 text-white focus-visible:ring-primary"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="custo" className="text-white/80">Custo em Moedas</Label>
+                            <Input
+                              id="custo"
+                              type="number"
+                              placeholder="Ex: 200"
+                              value={formVantagem.custo}
+                              onChange={(e) => setFormVantagem({ ...formVantagem, custo: e.target.value })}
+                              className="bg-black/40 border-white/10 text-white focus-visible:ring-primary"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="foto" className="text-white/80">URL da Foto</Label>
+                            <Input
+                              id="foto"
+                              type="url"
+                              placeholder="https://exemplo.com/imagem.jpg"
+                              value={formVantagem.foto}
+                              onChange={(e) => setFormVantagem({ ...formVantagem, foto: e.target.value })}
+                              className="bg-black/40 border-white/10 text-white focus-visible:ring-primary"
+                            />
+                            <div className="mt-4">
+                              <Label className="text-sm text-white/50 mb-2 block">Ou escolha uma foto pré-pronta:</Label>
+                              <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                                {[
+                                  'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80',
+                                  'https://images.unsplash.com/photo-1543168256-418811576931?w=400&q=80',
+                                  'https://images.unsplash.com/photo-1513001900722-370f803f498d?w=400&q=80',
+                                  'https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=400&q=80',
+                                  'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=400&q=80'
+                                ].map((url, i) => (
+                                  <img
+                                    key={i}
+                                    src={url}
+                                    alt={`Opção ${i + 1}`}
+                                    className={`w-16 h-16 object-cover rounded-md cursor-pointer border-2 transition-all flex-shrink-0 ${
+                                      formVantagem.foto === url ? 'border-primary scale-105 shadow-[0_0_10px_rgba(74,222,128,0.5)]' : 'border-transparent hover:border-white/30'
+                                    }`}
+                                    onClick={() => setFormVantagem({ ...formVantagem, foto: url })}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button variant="outline" onClick={() => setDialogAberto(false)} className="bg-white/5 border-white/10 text-white hover:bg-white/10">
+                            Cancelar
+                          </Button>
+                          <Button
+                            onClick={vantagemEditando ? handleEditarVantagem : handleAdicionarVantagem}
+                            className="bg-primary text-primary-foreground hover:bg-primary/90"
+                          >
+                            {vantagemEditando ? 'Salvar Alterações' : 'Adicionar Vantagem'}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+
+                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {vantagens.length === 0 && (
+                      <div className="col-span-full text-center py-16">
+                        <div className="bg-white/5 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
+                          <Gift className="w-10 h-10 text-white/40" />
+                        </div>
+                        <p className="text-white/60 text-lg">Nenhuma vantagem cadastrada.</p>
+                      </div>
+                    )}
+                    {vantagens.map((vantagem, index) => (
+                      <motion.div 
+                        key={vantagem.id}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.1, type: "spring" }}
+                      >
+                        <Card className={`${glassCardClass} overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-[0_0_30px_rgba(74,222,128,0.15)] hover:border-primary/30 hover:-translate-y-1`}>
+                          <div className="aspect-video w-full overflow-hidden bg-black/40 relative">
+                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+                            <img
+                              src={vantagem.foto}
+                              alt={vantagem.titulo}
+                              className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = getFallbackImage(vantagem.id);
+                              }}
+                            />
+                            <Badge className="absolute top-3 right-3 z-20" variant={vantagem.ativa ? 'default' : 'secondary'}>
+                              {vantagem.ativa ? 'Ativa' : 'Inativa'}
+                            </Badge>
+                          </div>
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-lg text-white">{vantagem.titulo}</CardTitle>
+                            <CardDescription className="text-white/60 line-clamp-2">{vantagem.descricao}</CardDescription>
+                          </CardHeader>
+                          <CardContent className="flex flex-col flex-1 space-y-4">
+                            <div className="bg-black/20 p-3 rounded-lg border border-white/5 mt-auto">
+                              <div className="flex items-center justify-between text-sm mb-2">
+                                <span className="text-white/60">Custo:</span>
+                                <span className="font-bold text-primary">{vantagem.custo} moedas</span>
+                              </div>
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-white/60">Resgates:</span>
+                                <span className="font-medium text-white">{vantagem.totalResgates}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white"
+                                onClick={() => abrirDialogEditar(vantagem)}
+                              >
+                                <Edit className="w-4 h-4 mr-1 text-white/70" />
+                                Editar
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="outline" size="sm" className="flex-1 bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-300">
+                                    <Trash2 className="w-4 h-4 mr-1" />
+                                    Excluir
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="bg-[#041f10]/95 backdrop-blur-3xl border-white/10 text-white">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle className="text-white">Tem certeza?</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-white/60">
+                                      Esta ação não pode ser desfeita. Isso irá deletar permanentemente
+                                      a vantagem "{vantagem.titulo}".
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel className="bg-white/5 border-white/10 text-white hover:bg-white/10">Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleDeletarVantagem(vantagem.id)}
+                                      className="bg-red-500 text-white hover:bg-red-600"
+                                    >
+                                      Excluir
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </TabsContent>
+              )}
+
+              {/* Resgates Tab */}
+              {activeTab === 'resgates' && (
+                <TabsContent value="resgates" className="space-y-6 mt-0" forceMount>
+                  <Card className={glassCardClass}>
+                    <CardHeader>
+                      <CardTitle className="text-white">Histórico de Resgates</CardTitle>
+                      <CardDescription className="text-white/60">Alunos que resgataram suas vantagens</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="rounded-xl overflow-hidden border border-white/10 bg-black/20">
+                        <Table>
+                          <TableHeader className="bg-white/5">
+                            <TableRow className="border-white/10 hover:bg-transparent">
+                              <TableHead className="text-white/80">Aluno</TableHead>
+                              <TableHead className="text-white/80">Vantagem</TableHead>
+                              <TableHead className="text-white/80">Cupom</TableHead>
+                              <TableHead className="text-white/80">Data</TableHead>
+                              <TableHead className="text-white/80">Status</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {resgates.map((resgate) => (
+                              <TableRow key={resgate.id} className="border-white/10 hover:bg-white/5 transition-colors">
+                                <TableCell>
+                                  <div>
+                                    <p className="font-medium text-white">{resgate.aluno}</p>
+                                    <p className="text-xs text-white/50">{resgate.email}</p>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="text-white/80">{resgate.vantagem}</TableCell>
+                                <TableCell>
+                                  <code className="bg-black/40 border border-white/10 px-2 py-1 rounded text-xs text-primary font-mono">
+                                    {resgate.cupom}
+                                  </code>
+                                </TableCell>
+                                <TableCell className="text-white/80">
+                                  {new Date(resgate.data).toLocaleDateString('pt-BR')}
+                                </TableCell>
+                                <TableCell>
+                                  <Badge variant="outline" className={`border-0 ${resgate.utilizado ? 'bg-white/10 text-white/60' : 'bg-primary/20 text-primary shadow-[0_0_10px_rgba(74,222,128,0.2)]'}`}>
+                                    {resgate.utilizado ? 'Utilizado' : 'Pendente'}
+                                  </Badge>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              )}
+
+              {/* Perfil Tab */}
+              {activeTab === 'perfil' && (
+                <TabsContent value="perfil" className="space-y-6 mt-0" forceMount>
+                  <Card className={glassCardClass}>
+                    <CardHeader>
+                      <CardTitle className="text-white">Informações da Empresa</CardTitle>
+                      <CardDescription className="text-white/60">Dados cadastrados no sistema</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                       <div className="flex items-center gap-6 pb-8 border-b border-white/10">
+                        <Avatar className="w-24 h-24 ring-4 ring-primary/20 shadow-[0_0_20px_rgba(74,222,128,0.2)]">
+                          <AvatarFallback className="bg-gradient-to-br from-primary/40 to-secondary/40 text-white text-3xl font-bold">
+                            {empresaData.nome.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <h3 className="text-3xl font-bold text-white mb-1">{empresaData.nome}</h3>
+                          <Badge variant="outline" className="bg-white/5 border-primary/30 text-primary">Empresa Parceira</Badge>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setDialogAberto(false)}>
-                      Cancelar
-                    </Button>
-                    <Button
-                      onClick={vantagemEditando ? handleEditarVantagem : handleAdicionarVantagem}
-                    >
-                      {vantagemEditando ? 'Salvar Alterações' : 'Adicionar Vantagem'}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {vantagens.map((vantagem) => (
-                <Card key={vantagem.id}>
-                  <div className="aspect-video w-full overflow-hidden bg-gray-100">
-                    <img
-                      src={vantagem.foto}
-                      alt={vantagem.titulo}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = getFallbackImage(vantagem.id);
-                      }}
-                    />
-                  </div>
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-lg">{vantagem.titulo}</CardTitle>
-                      <Badge variant={vantagem.ativa ? 'default' : 'secondary'}>
-                        {vantagem.ativa ? 'Ativa' : 'Inativa'}
-                      </Badge>
-                    </div>
-                    <CardDescription>{vantagem.descricao}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Custo:</span>
-                      <span className="font-semibold">{vantagem.custo} moedas</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Total de resgates:</span>
-                      <span className="font-semibold">{vantagem.totalResgates}</span>
-                    </div>
-                    <Separator />
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => abrirDialogEditar(vantagem)}
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Editar
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="flex-1">
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            Excluir
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Esta ação não pode ser desfeita. Isso irá deletar permanentemente
-                              a vantagem "{vantagem.titulo}".
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDeletarVantagem(vantagem.id)}
-                              className="bg-red-600 hover:bg-red-700"
-                            >
-                              Excluir
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Resgates Tab */}
-          <TabsContent value="resgates" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Histórico de Resgates</CardTitle>
-                <CardDescription>Alunos que resgataram suas vantagens</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Aluno</TableHead>
-                      <TableHead>Vantagem</TableHead>
-                      <TableHead>Cupom</TableHead>
-                      <TableHead>Data</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {resgates.map((resgate) => (
-                      <TableRow key={resgate.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{resgate.aluno}</p>
-                            <p className="text-xs text-gray-500">{resgate.email}</p>
+                      <div className="grid gap-8 md:grid-cols-2">
+                        <div className="space-y-6">
+                          <div className="flex items-start gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                            <div className="bg-white/5 p-2 rounded-lg">
+                              <Building2 className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-1">CNPJ</p>
+                              <p className="text-sm font-medium text-white">{empresaData.cnpj}</p>
+                            </div>
                           </div>
-                        </TableCell>
-                        <TableCell>{resgate.vantagem}</TableCell>
-                        <TableCell>
-                          <code className="bg-gray-100 px-2 py-1 rounded text-xs">
-                            {resgate.cupom}
-                          </code>
-                        </TableCell>
-                        <TableCell>
-                          {new Date(resgate.data).toLocaleDateString('pt-BR')}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={resgate.utilizado ? 'secondary' : 'default'}>
-                            {resgate.utilizado ? 'Utilizado' : 'Pendente'}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
-          {/* Perfil Tab */}
-          <TabsContent value="perfil" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Informações da Empresa</CardTitle>
-                <CardDescription>Dados cadastrados no sistema</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <Building2 className="w-5 h-5 text-gray-400 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Nome da Empresa</p>
-                        <p className="text-sm text-gray-900">{empresaData.nome}</p>
+                          <div className="flex items-start gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                            <div className="bg-white/5 p-2 rounded-lg">
+                              <Mail className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-1">Email</p>
+                              <p className="text-sm font-medium text-white">{empresaData.email}</p>
+                            </div>
+                          </div>
+                          
+                           <div className="flex items-start gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                            <div className="bg-white/5 p-2 rounded-lg">
+                              <Users className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-1">Responsável</p>
+                              <p className="text-sm font-medium text-white">{empresaData.responsavel}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-6">
+                          <div className="flex items-start gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                            <div className="bg-white/5 p-2 rounded-lg">
+                              <Phone className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-1">Telefone</p>
+                              <p className="text-sm font-medium text-white">{empresaData.telefone}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                            <div className="bg-white/5 p-2 rounded-lg">
+                              <Building2 className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-1">Setor</p>
+                              <p className="text-sm font-medium text-white">{empresaData.setor}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-4 p-4 rounded-xl bg-black/20 border border-white/5">
+                            <div className="bg-white/5 p-2 rounded-lg">
+                              <MapPin className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-1">Endereço</p>
+                              <p className="text-sm font-medium text-white">{empresaData.endereco}</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-start gap-3">
-                      <Building2 className="w-5 h-5 text-gray-400 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">CNPJ</p>
-                        <p className="text-sm text-gray-900">{empresaData.cnpj}</p>
+                      <div className="flex justify-end pt-6 border-t border-white/10">
+                        <Button className="bg-white/10 hover:bg-white/20 text-white border-0" onClick={() => setEditandoPerfil(true)}>
+                          Editar Informações
+                        </Button>
                       </div>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <Mail className="w-5 h-5 text-gray-400 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Email</p>
-                        <p className="text-sm text-gray-900">{empresaData.email}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Telefone</p>
-                        <p className="text-sm text-gray-900">{empresaData.telefone}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <Building2 className="w-5 h-5 text-gray-400 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Setor</p>
-                        <p className="text-sm text-gray-900">{empresaData.setor}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Endereço</p>
-                        <p className="text-sm text-gray-900">{empresaData.endereco}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="flex justify-end">
-                  <Button variant="outline" onClick={() => setEditandoPerfil(true)}>
-                    Editar Informações
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </Tabs>
       </main>
     </div>
