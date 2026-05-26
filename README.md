@@ -1,4 +1,4 @@
-# 🎓 Sistema de Moeda Estudantil
+#  Sistema de Moeda Estudantil
 
 <p align="center">
   <img src="https://joaopauloaramuni.github.io/image/logo_ES_vertical.png" alt="Logo Engenharia de Software" width="150px"/>
@@ -23,7 +23,7 @@
 
 ---
 
-## 📝 Visão Geral
+##  Visão Geral
 
 <p align="justify">
   O <strong>Sistema de Moeda Estudantil</strong> é uma aplicação desenvolvida com o objetivo de incentivar o reconhecimento do mérito acadêmico por meio de uma moeda virtual. Professores podem distribuir moedas aos alunos como forma de recompensa por desempenho, participação e comportamento, enquanto os alunos podem acumular e trocar essas moedas por benefícios e vantagens exclusivas oferecidas por empresas parceiras.
@@ -35,7 +35,7 @@
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 O projeto foi reestruturado seguindo as melhores práticas modernas de desenvolvimento full-stack web, composto por um ecossistema robusto e altamente responsivo:
 
@@ -55,27 +55,27 @@ O projeto foi reestruturado seguindo as melhores práticas modernas de desenvolv
 
 ---
 
-## 📐 Modelagem e Arquitetura do Sistema
+##  Modelagem e Arquitetura do Sistema
 
-### 🗺️ Diagrama de Casos de Uso
+###  Diagrama de Casos de Uso
 O diagrama abaixo mapeia os atores do sistema (Aluno, Professor e Empresa) e suas respectivas interações dentro do ecossistema de moedas virtuais.
 <p align="center">
   <img width="100%" alt="Diagrama de caso uso" src="https://github.com/user-attachments/assets/6b762dcb-455e-4633-ab89-600931402a2d" />
 </p>
 
-### 🗂️ Diagrama de Classes
+###  Diagrama de Classes
 Representação das classes do sistema, seus atributos, métodos e os relacionamentos essenciais para o funcionamento do negócio.
 <p align="center">
   <img width="100%" alt="Diagrama de classes" src="https://github.com/user-attachments/assets/3162eea2-5037-43a8-bd1a-22820321694e" />
 </p>
 
-### 🧱 Diagrama de Componentes
+###  Diagrama de Componentes
 Visão arquitetural demonstrando a organização dos módulos do sistema e a forma como se comunicam.
 <p align="center">
   <img width="100%" alt="Diagrama de componentes" src="https://github.com/user-attachments/assets/9605afa2-4f30-4ba1-b84f-7f2c6522c864" />
 </p>
 
-### 🛢️ Modelo Entidade-Relacionamento (ER)
+###  Modelo Entidade-Relacionamento (ER)
 Estrutura de dados desenhada para o banco de dados relacional, mapeando tabelas, chaves primárias e estrangeiras.
 <p align="center">
   <img width="100%" alt="Modelo ER" src="https://github.com/user-attachments/assets/96501363-f093-49a4-921b-d764b916581f" />
@@ -83,7 +83,7 @@ Estrutura de dados desenhada para o banco de dados relacional, mapeando tabelas,
 
 ---
 
-## 👤 Histórias do Usuário
+##  Histórias do Usuário
 Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos usuários finais.
 <p align="center">
   <img width="80%" alt="Histórias de Usuário" src="https://github.com/user-attachments/assets/73d73090-b94d-4b65-8ae2-5170b67e746d" />
@@ -91,7 +91,7 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 ---
 
-## 💾 Estratégia de Acesso ao Banco de Dados
+##  Estratégia de Acesso ao Banco de Dados
 
 Para o Sistema de Moeda Estudantil, a estratégia de acesso ao banco de dados foi construída com foco em **segurança, robustez e performance**. Adotou-se o modelo **ORM (Object-Relational Mapping)** utilizando o **Prisma ORM** acoplado ao banco de dados relacional **MySQL**.
 
@@ -112,9 +112,9 @@ A conexão é gerenciada através de variáveis de ambiente no arquivo `.env` lo
 
 ---
 
-## 🚀 Como Executar o Projeto
+##  Como Executar o Projeto
 
-### 📋 Pré-requisitos
+###  Pré-requisitos
 Antes de começar, você precisará ter instalado em sua máquina:
 * [Node.js](https://nodejs.org/) (Versão 18 ou superior recomendada)
 * [MySQL Server](https://dev.mysql.com/downloads/mysql/) ativo
@@ -122,7 +122,7 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 ---
 
-### 🔧 Passos para Inicialização
+###  Passos para Inicialização
 
 #### 1. Clonar o repositório
 Abra o terminal e execute o comando:
@@ -185,7 +185,7 @@ cd Lab3_ProjetoDeSoftware
 
 ---
 
-## 🎨 Interface e Experiência do Usuário
+##  Interface e Experiência do Usuário
 
 A plataforma apresenta painéis interativos adaptados para cada tipo de usuário com recursos como:
 * **Painel do Aluno:** Consulta de saldo atualizado em tempo real, visualização detalhada do extrato de recebimentos, vitrine interativa de vantagens e resgate imediato de cupons com geração automática de código único.
