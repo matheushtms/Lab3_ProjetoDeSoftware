@@ -5,6 +5,7 @@ import { SignupPage } from './components/SignupPage';
 import { AlunoDashboard } from './components/AlunoDashboard';
 import { EmpresaDashboard } from './components/EmpresaDashboard';
 import { ProfessorDashboard } from './components/ProfessorDashboard';
+import { ThemeToggle } from './components/ThemeToggle';
 import { Toaster } from './components/ui/sonner';
 
 type Screen = 'login' | 'signup' | 'aluno-dashboard' | 'empresa-dashboard' | 'professor-dashboard';
@@ -39,6 +40,7 @@ export default function App() {
 
       <div className="relative z-10 size-full min-h-screen">
         <Toaster />
+        <ThemeToggle />
       {currentScreen === 'login' && (
         <LoginPage
           onNavigateToSignup={() => setCurrentScreen('signup')}

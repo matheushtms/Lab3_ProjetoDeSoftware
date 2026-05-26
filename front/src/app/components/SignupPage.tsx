@@ -6,6 +6,7 @@ import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Coins, GraduationCap, BookOpen, Building2 } from 'lucide-react';
+import { CoinEduLogo } from './CoinEduLogo';
 
 interface SignupPageProps {
   onBackToLogin: () => void;
@@ -59,12 +60,7 @@ export function SignupPage({ onBackToLogin }: SignupPageProps) {
             className="relative z-10 max-w-md text-center"
           >
             <div className="flex justify-center mb-6">
-              <motion.div 
-                whileHover={{ scale: 1.1, rotate: -5 }}
-                className="bg-primary/10 backdrop-blur-md p-4 rounded-3xl border border-primary/20 shadow-[0_0_30px_rgba(74,222,128,0.3)] w-28 h-28 flex items-center justify-center overflow-hidden"
-              >
-                <img src="/logo.png" alt="CoinEdu Logo" className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
-              </motion.div>
+              <CoinEduLogo size="lg" />
             </div>
 
             <h1 className="text-4xl font-bold mb-4 text-white drop-shadow-md">Junte-se ao CoinEdu</h1>
@@ -111,9 +107,7 @@ export function SignupPage({ onBackToLogin }: SignupPageProps) {
           <div className="w-full max-w-md py-4">
             {/* Logo mobile */}
             <div className="lg:hidden flex justify-center mb-8">
-              <div className="bg-primary/10 p-3 rounded-2xl border border-primary/20 shadow-[0_0_20px_rgba(74,222,128,0.2)] w-20 h-20 flex items-center justify-center overflow-hidden">
-                <img src="/logo.png" alt="CoinEdu Logo" className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
-              </div>
+              <CoinEduLogo size="md" />
             </div>
 
             <Card className="border-0 shadow-none bg-transparent">
