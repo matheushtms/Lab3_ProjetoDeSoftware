@@ -81,10 +81,58 @@ const deleteEmpresa = async (req, res) => {
   }
 };
 
+const getResgatesEmpresa = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const resgates = await prisma.resgate.findMany({
+      where: {
+        vantagem: {
+          empresaId: Number(id),
+        },
+      },
+      include: {
+        aluno: {
+          select: {
+            nome: true,
+            email: true,
+          },
+        },
+        vantagem: {
+          select: {
+            titulo: true,
+            custo: true,
+          },
+        },
+      },
+      orderBy: {
+        data: 'desc',
+      },
+    });
+
+    const resgatesFormatados = resgates.map((r) => ({
+      id: r.id,
+      aluno: r.aluno.nome,
+      email: r.aluno.email,
+      vantagem: r.vantagem.titulo,
+      custo: r.vantagem.custo,
+      data: r.data,
+      cupom: r.codigo,
+      utilizado: false,
+    }));
+
+    res.json(resgatesFormatados);
+  } catch (error) {
+    console.error('Erro ao buscar resgates da empresa:', error);
+    res.status(500).json({ error: 'Erro ao buscar resgates da empresa' });
+  }
+};
+
 module.exports = {
   getEmpresas,
   getEmpresaById,
   createEmpresa,
   updateEmpresa,
   deleteEmpresa,
+  getResgatesEmpresa,
 };
+

@@ -205,8 +205,49 @@ const sendResgateEmailToAluno = async (alunoEmail, alunoNome, vantagemTitulo, em
   }
 };
 
+const sendResgateEmailToEmpresa = async (empresaEmail, empresaNome, alunoNome, alunoEmail, vantagemTitulo, codigo) => {
+  const safeEmpresaNome = escapeHtml(empresaNome);
+  const safeAlunoNome = escapeHtml(alunoNome);
+  const safeAlunoEmail = escapeHtml(alunoEmail);
+  const safeVantagemTitulo = escapeHtml(vantagemTitulo);
+  const safeCodigo = escapeHtml(codigo);
+
+  const mailOptions = {
+    from: `"CoinEdu" <${process.env.EMAIL_USER}>`,
+    to: empresaEmail,
+    subject: 'Notificacao de resgate de vantagem',
+    html: renderEmailShell({
+      preheader: `Um aluno resgatou a vantagem ${safeVantagemTitulo}.`,
+      badge: 'Resgate notificado',
+      title: `Ola, ${safeEmpresaNome}!`,
+      subtitle: 'Um aluno acabou de realizar o resgate de uma vantagem oferecida pela sua empresa.',
+      footerNote: 'Valide o codigo apresentado pelo aluno para confirmar o uso da vantagem no seu estabelecimento.',
+      children: `
+        <div style="margin-top: 28px; border-radius: 22px; background: #111111; color: #ffffff; padding: 24px;">
+          <div style="font-size: 12px; letter-spacing: 2px; font-weight: 800; text-transform: uppercase; color: #a7f3d0;">Codigo a ser validado</div>
+          <div style="margin-top: 10px; font-size: 34px; line-height: 1; font-weight: 900; letter-spacing: 4px;">${safeCodigo}</div>
+        </div>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top: 22px;">
+          ${detailRow('Vantagem', safeVantagemTitulo)}
+          ${detailRow('Aluno', safeAlunoNome)}
+          ${detailRow('Email do Aluno', safeAlunoEmail)}
+        </table>
+      `,
+    }),
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Email de notificacao de resgate enviado com sucesso para ${empresaEmail}`);
+  } catch (error) {
+    console.error(`Erro ao enviar email de notificacao para ${empresaEmail}:`, error);
+  }
+};
+
 module.exports = {
   sendCoinTransferEmailToAluno,
   sendCoinTransferEmailToProfessor,
-  sendResgateEmailToAluno
+  sendResgateEmailToAluno,
+  sendResgateEmailToEmpresa
 };
+

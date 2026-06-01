@@ -354,6 +354,11 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
                                       <Calendar className="w-3 h-3 mr-1" />
                                       {new Date(transacao.data).toLocaleDateString('pt-BR')}
                                     </Badge>
+                                    {transacao.tipo === 'resgate' && transacao.codigo && (
+                                      <Badge variant="outline" className="text-[10px] bg-primary/10 border-primary/20 text-primary font-mono font-bold shadow-[0_0_5px_rgba(74,222,128,0.1)]">
+                                        Cupom: {transacao.codigo}
+                                      </Badge>
+                                    )}
                                   </div>
                                 </div>
                               </div>

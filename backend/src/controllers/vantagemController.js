@@ -1,5 +1,5 @@
 const prisma = require('../prismaClient');
-const { sendResgateEmailToAluno } = require('../services/emailService');
+const { sendResgateEmailToAluno, sendResgateEmailToEmpresa } = require('../services/emailService');
 
 const getVantagens = async (req, res) => {
   const { empresaId } = req.query;
@@ -10,7 +10,8 @@ const getVantagens = async (req, res) => {
       include: {
         empresa: {
           select: { nomeFantasia: true }
-        }
+        },
+        resgates: true
       }
     });
     res.json(vantagens);
@@ -87,12 +88,21 @@ const resgatarVantagem = async (req, res) => {
       return novoResgate;
     });
 
-    // Enviar email
+    // Enviar emails
     await sendResgateEmailToAluno(
       aluno.email,
       aluno.nome,
       vantagem.titulo,
       vantagem.empresa.nomeFantasia,
+      codigoResgate
+    );
+
+    await sendResgateEmailToEmpresa(
+      vantagem.empresa.email,
+      vantagem.empresa.nomeFantasia,
+      aluno.nome,
+      aluno.email,
+      vantagem.titulo,
       codigoResgate
     );
 

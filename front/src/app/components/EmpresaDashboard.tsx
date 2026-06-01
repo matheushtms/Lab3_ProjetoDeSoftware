@@ -111,10 +111,12 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
   };
 
   const [vantagens, setVantagens] = useState<any[]>([]);
+  const [resgates, setResgates] = useState<Resgate[]>([]);
 
   useEffect(() => {
     if (empresaData.id) {
       fetchVantagens();
+      fetchResgates();
     }
   }, [empresaData.id]);
 
@@ -137,45 +139,19 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
     }
   };
 
-  // Resgates mockados
-  const resgates: Resgate[] = [
-    {
-      id: 1,
-      aluno: 'João Silva',
-      email: 'joao.silva@universidade.edu.br',
-      vantagem: 'Almoço Grátis',
-      data: '2026-05-18',
-      cupom: 'RUP-2026-001',
-      utilizado: true
-    },
-    {
-      id: 2,
-      aluno: 'Maria Santos',
-      email: 'maria.santos@universidade.edu.br',
-      vantagem: '30% OFF em Combos',
-      data: '2026-05-17',
-      cupom: 'RUP-2026-002',
-      utilizado: false
-    },
-    {
-      id: 3,
-      aluno: 'Pedro Costa',
-      email: 'pedro.costa@universidade.edu.br',
-      vantagem: 'Almoço Grátis',
-      data: '2026-05-16',
-      cupom: 'RUP-2026-003',
-      utilizado: true
-    },
-    {
-      id: 4,
-      aluno: 'Ana Paula',
-      email: 'ana.paula@universidade.edu.br',
-      vantagem: 'Sobremesa Grátis',
-      data: '2026-05-15',
-      cupom: 'RUP-2026-004',
-      utilizado: false
+  const fetchResgates = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/empresas/${empresaData.id}/resgates`);
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setResgates(data);
+      } else {
+        console.error('Erro ao buscar resgates da empresa:', data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar resgates da empresa:', error);
     }
-  ];
+  };
 
   const [formVantagem, setFormVantagem] = useState({
     titulo: '',
