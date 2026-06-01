@@ -81,7 +81,17 @@ Estrutura de dados desenhada para o banco de dados relacional, mapeando tabelas,
   <img width="100%" alt="Modelo ER" src="https://github.com/user-attachments/assets/96501363-f093-49a4-921b-d764b916581f" />
 </p>
 
-### 🔄 Diagrama de Sequência Geral
+---
+
+##  Histórias do Usuário
+Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos usuários finais.
+<p align="center">
+  <img width="80%" alt="Histórias de Usuário" src="https://github.com/user-attachments/assets/73d73090-b94d-4b65-8ae2-5170b67e746d" />
+</p>
+
+---
+
+###  Diagrama de Sequência Geral
 Representação detalhada dos fluxos de dados, comunicação entre Frontend e Backend, chamadas à API, transações do banco de dados (Prisma/MySQL) e envio de e-mails (Nodemailer).
 
 #### 1. Fluxo de Autenticação e Login
@@ -263,15 +273,7 @@ sequenceDiagram
 ```
 
 
----
 
-##  Histórias do Usuário
-Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos usuários finais.
-<p align="center">
-  <img width="80%" alt="Histórias de Usuário" src="https://github.com/user-attachments/assets/73d73090-b94d-4b65-8ae2-5170b67e746d" />
-</p>
-
----
 
 ##  Estratégia de Acesso ao Banco de Dados
 
