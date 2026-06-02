@@ -45,37 +45,40 @@ sequenceDiagram
     participant Front as Frontend (LoginPage.tsx)
     participant Router as Backend Router (Express)
     participant Ctrl as Controllers (aluno/prof/empresaController)
-    participant DB as Prisma / MySQL
+    database DB as Prisma / MySQL
 
     Usuario->>Front: Seleciona perfil, insere Email e Senha
-    Usuario->>Front: Clica em "Entrar"
+    Usuario->>+Front: Clica em "Entrar" (Síncrono)
     
     alt Perfil selecionado: Aluno
-        Front->>Router: GET /api/alunos
-        Router->>Ctrl: getAlunos(req, res)
-        Ctrl->>DB: prisma.aluno.findMany()
-        DB-->>Ctrl: Retorna array de alunos
-        Ctrl-->>Front: 200 OK (Array de Alunos JSON)
+        Front->>+Router: GET /api/alunos
+        Router->>+Ctrl: getAlunos(req, res)
+        Ctrl->>+DB: prisma.aluno.findMany()
+        DB-->>-Ctrl: Retorna array de alunos
+        Ctrl-->>-Router: Retorna JSON
+        Router-->>-Front: 200 OK (Array de Alunos JSON)
     else Perfil selecionado: Professor
-        Front->>Router: GET /api/professores
-        Router->>Ctrl: getProfessores(req, res)
-        Ctrl->>DB: prisma.professor.findMany()
-        DB-->>Ctrl: Retorna array de professores
-        Ctrl-->>Front: 200 OK (Array de Professores JSON)
+        Front->>+Router: GET /api/professores
+        Router->>+Ctrl: getProfessores(req, res)
+        Ctrl->>+DB: prisma.professor.findMany()
+        DB-->>-Ctrl: Retorna array de professores
+        Ctrl-->>-Router: Retorna JSON
+        Router-->>-Front: 200 OK (Array de Professores JSON)
     else Perfil selecionado: Empresa Parceira
-        Front->>Router: GET /api/empresas
-        Router->>Ctrl: getEmpresas(req, res)
-        Ctrl->>DB: prisma.empresaParceira.findMany()
-        DB-->>Ctrl: Retorna array de empresas
-        Ctrl-->>Front: 200 OK (Array de Empresas JSON)
+        Front->>+Router: GET /api/empresas
+        Router->>+Ctrl: getEmpresas(req, res)
+        Ctrl->>+DB: prisma.empresaParceira.findMany()
+        DB-->>-Ctrl: Retorna array de empresas
+        Ctrl-->>-Router: Retorna JSON
+        Router-->>-Front: 200 OK (Array de Empresas JSON)
     end
 
     Note over Front: Frontend executa a validação local:<br/>userExists = lista.find(email e senha coincidem)
 
     alt Credenciais Válidas
-        Front->>Usuario: Redireciona para o Dashboard específico
+        Front-->>Usuario: Redireciona para o Dashboard específico
     else Credenciais Inválidas
-        Front->>Usuario: Exibe alerta "Email não encontrado ou senha incorreta!"
+        Front-->>-Usuario: Exibe alerta "Email não encontrado ou senha incorreta!"
     end
 ```
 
@@ -91,46 +94,49 @@ sequenceDiagram
     participant Front as Frontend (ProfessorDashboard.tsx)
     participant Router as Backend Router (Express)
     participant Ctrl as TransacaoController (transacaoController.js)
-    participant DB as Prisma / MySQL
-    participant Nodemailer as emailService (Nodemailer)
+    database DB as Prisma / MySQL
+    queue Nodemailer as emailService (Nodemailer)
     actor Aluno as Aluno (Notificado)
 
     Prof->>Front: Seleciona Aluno, insere Valor e Motivo
-    Prof->>Front: Clica em "Enviar Moedas"
-    Front->>Router: POST /api/transacoes/enviar (JSON body)
-    Router->>Ctrl: enviarMoedas(req, res)
+    Prof->>+Front: Clica em "Enviar Moedas" (Síncrono)
+    Front->>+Router: POST /api/transacoes/enviar (JSON body)
+    Router->>+Ctrl: enviarMoedas(req, res)
     
     Note over Ctrl: Valida dados básicos (campos vazios, valor <= 0)
 
-    Ctrl->>DB: Buscar dados do Professor (prisma.professor.findUnique)
-    DB-->>Ctrl: Registro do Professor
+    Ctrl->>+DB: Buscar dados do Professor (prisma.professor.findUnique)
+    DB-->>-Ctrl: Registro do Professor
     
-    Ctrl->>DB: Buscar dados do Aluno (prisma.aluno.findUnique)
-    DB-->>Ctrl: Registro do Aluno
+    Ctrl->>+DB: Buscar dados do Aluno (prisma.aluno.findUnique)
+    DB-->>-Ctrl: Registro do Aluno
 
     alt Professor ou Aluno não existem
-        Ctrl-->>Front: 404 Not Found
-        Front-->>Prof: Exibe mensagem de erro
+        Ctrl-->>-Router: 404 Not Found
+        Router-->>-Front: 404 Not Found
+        Front-->>-Prof: Exibe mensagem de erro
     else Sucesso na validação
 
         rect rgb(30, 41, 59)
             Note over Ctrl, DB: Execução da Transação no Banco ($transaction)
-            Ctrl->>DB: tx.aluno.update (Incrementa saldo do Aluno)
-            Ctrl->>DB: tx.transacao.create (Registra histórico da transação)
-            DB-->>Ctrl: Confirmação e dados criados
+            Ctrl->>+DB: tx.aluno.update (Incrementa saldo do Aluno)
+            DB-->>-Ctrl: Confirmação
+            Ctrl->>+DB: tx.transacao.create (Registra histórico da transação)
+            DB-->>-Ctrl: Confirmação e dados criados
         end
 
         Note over Ctrl, Nodemailer: Processamento Assíncrono de E-mails
         par Notificar Aluno
-            Ctrl->>Nodemailer: sendCoinTransferEmailToAluno(...)
-            Nodemailer-->>Aluno: Envia e-mail de recebimento (Valor, Professor, Motivo)
+            Ctrl->Nodemailer: sendCoinTransferEmailToAluno(...) (Assíncrono)
+            Nodemailer->Aluno: Envia e-mail de recebimento (Assíncrono)
         and Notificar Professor
-            Ctrl->>Nodemailer: sendCoinTransferEmailToProfessor(...)
-            Nodemailer-->>Prof: Envia e-mail de confirmação de envio
+            Ctrl->Nodemailer: sendCoinTransferEmailToProfessor(...) (Assíncrono)
+            Nodemailer->Prof: Envia e-mail de confirmação de envio (Assíncrono)
         end
 
-        Ctrl-->>Front: 201 Created (Objeto Transação)
-        Front-->>Prof: Exibe notificação de sucesso via Sonner
+        Ctrl-->>-Router: 201 Created (Objeto Transação)
+        Router-->>-Front: 201 Created (Objeto Transação)
+        Front-->>-Prof: Exibe notificação de sucesso via Sonner
     end
 ```
 
@@ -146,50 +152,54 @@ sequenceDiagram
     participant Front as Frontend (AlunoDashboard.tsx)
     participant Router as Backend Router (Express)
     participant Ctrl as VantagemController (vantagemController.js)
-    participant DB as Prisma / MySQL
-    participant Nodemailer as emailService (Nodemailer)
+    database DB as Prisma / MySQL
+    queue Nodemailer as emailService (Nodemailer)
     actor Empresa as Empresa Parceira (Notificada)
 
     Aluno->>Front: Visualiza a Vitrine de Vantagens
-    Aluno->>Front: Clica em "Resgatar" na Vantagem desejada
-    Front->>Router: POST /api/vantagens/resgatar (JSON body)
-    Router->>Ctrl: resgatarVantagem(req, res)
+    Aluno->>+Front: Clica em "Resgatar" na Vantagem desejada (Síncrono)
+    Front->>+Router: POST /api/vantagens/resgatar (JSON body)
+    Router->>+Ctrl: resgatarVantagem(req, res)
 
-    Ctrl->>DB: Buscar dados do Aluno
-    DB-->>Ctrl: Retorna Aluno (saldo atual)
-    Ctrl->>DB: Buscar Vantagem e Empresa Parceira
-    DB-->>Ctrl: Retorna Vantagem e dados da Empresa
+    Ctrl->>+DB: Buscar dados do Aluno
+    DB-->>-Ctrl: Retorna Aluno (saldo atual)
+    Ctrl->>+DB: Buscar Vantagem e Empresa Parceira
+    DB-->>-Ctrl: Retorna Vantagem e dados da Empresa
 
     alt Saldo do Aluno < Custo da Vantagem
-        Ctrl-->>Front: 400 Bad Request (Saldo insuficiente)
-        Front-->>Aluno: Exibe "Saldo insuficiente para resgatar..."
+        Ctrl-->>-Router: 400 Bad Request (Saldo insuficiente)
+        Router-->>-Front: 400 Bad Request
+        Front-->>-Aluno: Exibe "Saldo insuficiente para resgatar..."
     else Já resgatou a vantagem anteriormente
-        Ctrl->>DB: Buscar se já existe resgate (findFirst)
-        DB-->>Ctrl: Resgate existente encontrado
-        Ctrl-->>Front: 400 Bad Request (Já resgatou)
-        Front-->>Aluno: Exibe "Você já resgatou esta vantagem."
+        Ctrl->>+DB: Buscar se já existe resgate (findFirst)
+        DB-->>-Ctrl: Resgate existente encontrado
+        Ctrl-->>-Router: 400 Bad Request (Já resgatou)
+        Router-->>-Front: 400 Bad Request
+        Front-->>-Aluno: Exibe "Você já resgatou esta vantagem."
     else Saldo Suficiente e Válido
         Note over Ctrl: Gerar código único alfanumérico (ex: RESG-F8A2D9)
         
         rect rgb(30, 41, 59)
             Note over Ctrl, DB: Execução da Transação no Banco ($transaction)
-            Ctrl->>DB: tx.aluno.update (Decrementa saldo do Aluno)
-            Ctrl->>DB: tx.resgate.create (Cria cupom com o código alfanumérico)
-            DB-->>Ctrl: Retorna dados do Resgate
+            Ctrl->>+DB: tx.aluno.update (Decrementa saldo do Aluno)
+            DB-->>-Ctrl: Confirmação
+            Ctrl->>+DB: tx.resgate.create (Cria cupom com o código alfanumérico)
+            DB-->>-Ctrl: Retorna dados do Resgate
         end
 
         Note over Ctrl, Nodemailer: Processamento Assíncrono de E-mails
         par Notificar Aluno
-            Ctrl->>Nodemailer: sendResgateEmailToAluno(...)
-            Nodemailer-->>Aluno: Envia e-mail com cupom gerado
+            Ctrl->Nodemailer: sendResgateEmailToAluno(...) (Assíncrono)
+            Nodemailer->Aluno: Envia e-mail com cupom gerado (Assíncrono)
         and Notificar Empresa
-            Ctrl->>Nodemailer: sendResgateEmailToEmpresa(...)
-            Nodemailer-->>Empresa: Envia e-mail com dados do resgate e código do cupom
+            Ctrl->Nodemailer: sendResgateEmailToEmpresa(...) (Assíncrono)
+            Nodemailer->Empresa: Envia e-mail com dados do resgate e código do cupom (Assíncrono)
         end
 
-        Ctrl-->>Front: 201 Created (Objeto Resgate com Código)
+        Ctrl-->>-Router: 201 Created (Objeto Resgate com Código)
+        Router-->>-Front: 201 Created
         Front->>Front: Atualiza saldo local e exibe cupom resgatado
-        Front-->>Aluno: Notificação de resgate efetuado com sucesso
+        Front-->>-Aluno: Notificação de resgate efetuado com sucesso
     end
 ```
 
@@ -205,25 +215,27 @@ sequenceDiagram
     participant Front as Frontend (EmpresaDashboard.tsx)
     participant Router as Backend Router (Express)
     participant Ctrl as VantagemController (vantagemController.js)
-    participant DB as Prisma / MySQL
+    database DB as Prisma / MySQL
 
     Empresa->>Front: Preenche formulário (Título, Descrição, Custo, Imagem)
-    Empresa->>Front: Clica em "Salvar Vantagem"
-    Front->>Router: POST /api/vantagens (JSON body)
-    Router->>Ctrl: criarVantagem(req, res)
+    Empresa->>+Front: Clica em "Salvar Vantagem" (Síncrono)
+    Front->>+Router: POST /api/vantagens (JSON body)
+    Router->>+Ctrl: criarVantagem(req, res)
 
-    Ctrl->>DB: Buscar se Empresa existe (prisma.empresaParceira.findUnique)
-    DB-->>Ctrl: Registro da Empresa
+    Ctrl->>+DB: Buscar se Empresa existe (prisma.empresaParceira.findUnique)
+    DB-->>-Ctrl: Registro da Empresa
 
     alt Empresa não encontrada
-        Ctrl-->>Front: 404 Not Found
-        Front-->>Empresa: Exibe erro de empresa inválida
+        Ctrl-->>-Router: 404 Not Found
+        Router-->>-Front: 404 Not Found
+        Front-->>-Empresa: Exibe erro de empresa inválida
     else Empresa existente
-        Ctrl->>DB: prisma.vantagem.create (Insere nova Vantagem no MySQL)
-        DB-->>Ctrl: Retorna a nova Vantagem criada
-        Ctrl-->>Front: 201 Created (Vantagem JSON)
+        Ctrl->>+DB: prisma.vantagem.create (Insere nova Vantagem no MySQL)
+        DB-->>-Ctrl: Retorna a nova Vantagem criada
+        Ctrl-->>-Router: 201 Created (Vantagem JSON)
+        Router-->>-Front: 201 Created
         Front->>Front: Atualiza a lista local de vantagens da empresa
-        Front-->>Empresa: Exibe aviso de vantagem cadastrada com sucesso!
+        Front-->>-Empresa: Exibe aviso de vantagem cadastrada com sucesso!
     end
 ```
 
