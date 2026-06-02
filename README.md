@@ -93,7 +93,20 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 ###  Diagrama de Sequência Geral
 
+## Fluxo de Autenticação e Entrada no Sistema
+<img width="753" height="583" alt="image" src="https://github.com/user-attachments/assets/d546edbe-e523-40c6-aa7e-df521f5a64f3" />
 
+##Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
+
+<img width="1150" height="633" alt="image" src="https://github.com/user-attachments/assets/26110abe-1cb6-4c90-97fc-0fd355d634ec" />
+
+##Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
+
+<img width="884" height="571" alt="image" src="https://github.com/user-attachments/assets/7e81d643-709f-4dcd-b57d-7b168880edf2" />
+
+##Fluxo de Gerenciamento de Vantagens (Empresa Parceira)
+
+<img width="971" height="493" alt="image" src="https://github.com/user-attachments/assets/c76185f8-8a73-4d13-bd6d-8544879d7173" />
 
 
 
