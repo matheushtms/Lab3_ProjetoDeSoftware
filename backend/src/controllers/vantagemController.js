@@ -88,25 +88,29 @@ const resgatarVantagem = async (req, res) => {
       return novoResgate;
     });
 
-    // Enviar emails em segundo plano com um atraso para não travar a resposta da API
-    setTimeout(() => {
-      sendResgateEmailToAluno(
-        aluno.email,
-        aluno.nome,
-        vantagem.titulo,
-        vantagem.empresa.nomeFantasia,
-        codigoResgate
-      ).catch(err => console.error('Erro ao enviar email de resgate para o aluno:', err));
+    // Enviar emails apenas se não estiver no Render (o Render bloqueia portas SMTP por padrão, causando travamento)
+    if (process.env.RENDER !== 'true') {
+      setTimeout(() => {
+        sendResgateEmailToAluno(
+          aluno.email,
+          aluno.nome,
+          vantagem.titulo,
+          vantagem.empresa.nomeFantasia,
+          codigoResgate
+        ).catch(err => console.error('Erro ao enviar email de resgate para o aluno:', err));
 
-      sendResgateEmailToEmpresa(
-        vantagem.empresa.email,
-        vantagem.empresa.nomeFantasia,
-        aluno.nome,
-        aluno.email,
-        vantagem.titulo,
-        codigoResgate
-      ).catch(err => console.error('Erro ao enviar email de resgate para a empresa:', err));
-    }, 1000);
+        sendResgateEmailToEmpresa(
+          vantagem.empresa.email,
+          vantagem.empresa.nomeFantasia,
+          aluno.nome,
+          aluno.email,
+          vantagem.titulo,
+          codigoResgate
+        ).catch(err => console.error('Erro ao enviar email de resgate para a empresa:', err));
+      }, 1000);
+    } else {
+      console.log('Envio de email de resgate ignorado no Render para evitar lentidão (portas SMTP bloqueadas).');
+    }
 
     res.status(201).json(resgate);
   } catch (error) {

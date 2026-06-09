@@ -6,6 +6,9 @@ router.post('/enviar', transacaoController.enviarMoedas);
 router.get('/test-email', async (req, res) => {
   const { sendCoinTransferEmailToAluno } = require('../services/emailService');
   try {
+    if (process.env.RENDER === 'true') {
+      return res.json({ message: 'Envio de email de teste desabilitado no Render para evitar travamento.' });
+    }
     await sendCoinTransferEmailToAluno("matheusht100@gmail.com", "Teste App", "Admin", 50, "Testando API");
     res.json({ message: 'E-mail de teste executado pela rota da API. Cheque o console do backend.' });
   } catch (e) {
