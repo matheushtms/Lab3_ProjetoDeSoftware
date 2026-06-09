@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Aluno {
@@ -69,9 +69,9 @@ model Vantagem {
   id          Int      @id @default(autoincrement())
   empresaId   Int
   titulo      String
-  descricao   String   @db.Text
+  descricao   String
   custo       Int
-  imagem      String?  @db.Text
+  imagem      String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
