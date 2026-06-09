@@ -138,13 +138,7 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 
 
-## 4. Fluxo de Gerenciamento de Vantagens (Empresa)
-
-
-<img width="682" height="483" alt="image" src="https://github.com/user-attachments/assets/c3a35d4d-7a82-4fec-8868-3ee13a6f92c8" />
-
-
-##Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
+## Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
 
 
 <img width="884" height="571" alt="image" src="https://github.com/user-attachments/assets/7e81d643-709f-4dcd-b57d-7b168880edf2" />
