@@ -218,9 +218,21 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
     }
   };
 
-  const handleDeletarVantagem = (id: number) => {
-    setVantagens(vantagens.filter(v => v.id !== id));
-    toast.success('Vantagem removida com sucesso!');
+  const handleDeletarVantagem = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/vantagens/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        toast.success('Vantagem removida com sucesso!');
+        fetchVantagens();
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Erro ao remover vantagem.');
+      }
+    } catch (error) {
+      toast.error('Erro de conexão ao remover vantagem.');
+    }
   };
 
   const abrirDialogAdicionar = () => {

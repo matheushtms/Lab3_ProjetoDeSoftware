@@ -180,9 +180,38 @@ const editarVantagem = async (req, res) => {
   }
 };
 
+const deletarVantagem = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const vantagem = await prisma.vantagem.findUnique({
+      where: { id: Number(id) },
+      include: { resgates: true }
+    });
+
+    if (!vantagem) {
+      return res.status(404).json({ error: 'Vantagem não encontrada.' });
+    }
+
+    if (vantagem.resgates && vantagem.resgates.length > 0) {
+      return res.status(400).json({ error: 'Não é possível excluir uma vantagem que já foi resgatada por alunos.' });
+    }
+
+    await prisma.vantagem.delete({
+      where: { id: Number(id) }
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error('Erro ao deletar vantagem:', error);
+    res.status(500).json({ error: 'Erro ao deletar a vantagem.' });
+  }
+};
+
 module.exports = {
   getVantagens,
   resgatarVantagem,
   criarVantagem,
-  editarVantagem
+  editarVantagem,
+  deletarVantagem
 };

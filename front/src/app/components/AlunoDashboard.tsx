@@ -364,7 +364,7 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
                               </div>
                               <div className="text-right">
                                 <p className={`text-lg font-bold ${transacao.tipo === 'resgate' ? 'text-red-400' : 'text-primary drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]'}`}>
-                                  {transacao.tipo === 'resgate' ? '-' : '+'}{transacao.valor.toLocaleString('pt-BR')}
+                                  {transacao.tipo === 'resgate' ? '-' : '+'}{Math.abs(transacao.valor).toLocaleString('pt-BR')}
                                 </p>
                                 <Badge variant="outline" className={`text-xs mt-1 border-0 ${transacao.tipo === 'resgate' ? 'bg-red-500/20 text-red-300' : 'bg-primary/20 text-primary-foreground'}`}>
                                   {transacao.tipo === 'resgate' ? 'Resgatado' : 'Recebido'}
