@@ -88,23 +88,25 @@ const resgatarVantagem = async (req, res) => {
       return novoResgate;
     });
 
-    // Enviar emails em segundo plano (sem travar a resposta)
-    sendResgateEmailToAluno(
-      aluno.email,
-      aluno.nome,
-      vantagem.titulo,
-      vantagem.empresa.nomeFantasia,
-      codigoResgate
-    ).catch(err => console.error('Erro ao enviar email de resgate para o aluno:', err));
+    // Enviar emails em segundo plano com um atraso para não travar a resposta da API
+    setTimeout(() => {
+      sendResgateEmailToAluno(
+        aluno.email,
+        aluno.nome,
+        vantagem.titulo,
+        vantagem.empresa.nomeFantasia,
+        codigoResgate
+      ).catch(err => console.error('Erro ao enviar email de resgate para o aluno:', err));
 
-    sendResgateEmailToEmpresa(
-      vantagem.empresa.email,
-      vantagem.empresa.nomeFantasia,
-      aluno.nome,
-      aluno.email,
-      vantagem.titulo,
-      codigoResgate
-    ).catch(err => console.error('Erro ao enviar email de resgate para a empresa:', err));
+      sendResgateEmailToEmpresa(
+        vantagem.empresa.email,
+        vantagem.empresa.nomeFantasia,
+        aluno.nome,
+        aluno.email,
+        vantagem.titulo,
+        codigoResgate
+      ).catch(err => console.error('Erro ao enviar email de resgate para a empresa:', err));
+    }, 1000);
 
     res.status(201).json(resgate);
   } catch (error) {

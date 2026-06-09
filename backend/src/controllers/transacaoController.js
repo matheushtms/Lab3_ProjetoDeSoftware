@@ -59,11 +59,13 @@ const enviarMoedas = async (req, res) => {
       return novaTransacao;
     });
 
-    // Enviar emails em segundo plano (sem travar a resposta)
-    // sendCoinTransferEmailToAluno(aluno.email, aluno.nome, professor.nome, valor, motivo)
-    //   .catch(err => console.error('Erro ao enviar email para o aluno:', err));
-    // sendCoinTransferEmailToProfessor(professor.email, professor.nome, aluno.nome, valor, motivo)
-    //   .catch(err => console.error('Erro ao enviar email para o professor:', err));
+    // Enviar emails em segundo plano com um atraso para não travar a resposta da API
+    setTimeout(() => {
+      sendCoinTransferEmailToAluno(aluno.email, aluno.nome, professor.nome, valor, motivo)
+        .catch(err => console.error('Erro ao enviar email para o aluno:', err));
+      sendCoinTransferEmailToProfessor(professor.email, professor.nome, aluno.nome, valor, motivo)
+        .catch(err => console.error('Erro ao enviar email para o professor:', err));
+    }, 1000);
 
     res.status(201).json(transacao);
 
