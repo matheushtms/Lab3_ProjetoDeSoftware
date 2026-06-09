@@ -91,214 +91,70 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 ---
 
+### Diagrama de Implantação
+
+<img width="873" height="519" alt="image" src="https://github.com/user-attachments/assets/ca717e80-8eee-4453-b91c-8ef8329e0d7c" />
+
+### Diagrama de Comunicação
+
+## Fluxo de Autenticação e Login
+
+<img width="660" height="492" alt="image" src="https://github.com/user-attachments/assets/d33a37a3-a6a8-48d3-a2e7-6eb6834b43e5" />
+
+
+## Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
+
+<img width="663" height="472" alt="image" src="https://github.com/user-attachments/assets/3810a4f2-cb46-45a1-8469-65c9ccca740e" />
+
+## Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
+<img width="671" height="477" alt="image" src="https://github.com/user-attachments/assets/f34e32e7-8c8c-432d-8bce-dc2bb9bd0941" />
+
+## Fluxo de Gerenciamento de Vantagens (Empresa)
+
+<img width="667" height="490" alt="image" src="https://github.com/user-attachments/assets/8a10c7cd-1d52-45e4-b9ae-939c926663c3" />
+
+
+---
+
 ###  Diagrama de Sequência Geral
 
-<<<<<<< HEAD
-#### 1. Fluxo de Autenticação e Login
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Usuario as Usuário (Aluno/Prof/Empresa)
-    participant Front as Frontend (LoginPage.tsx)
-    participant Router as Backend Router (Express)
-    participant Ctrl as Controllers (aluno/prof/empresaController)
-    database DB as Prisma / MySQL
 
-    Usuario->>Front: Seleciona perfil, insere Email e Senha
-    Usuario->>+Front: Clica em "Entrar" (Síncrono)
-    
-    alt Perfil selecionado: Aluno
-        Front->>+Router: GET /api/alunos
-        Router->>+Ctrl: getAlunos(req, res)
-        Ctrl->>+DB: prisma.aluno.findMany()
-        DB-->>-Ctrl: Retorna array de alunos
-        Ctrl-->>-Router: Retorna JSON
-        Router-->>-Front: 200 OK (Array de Alunos JSON)
-    else Perfil selecionado: Professor
-        Front->>+Router: GET /api/professores
-        Router->>+Ctrl: getProfessores(req, res)
-        Ctrl->>+DB: prisma.professor.findMany()
-        DB-->>-Ctrl: Retorna array de professores
-        Ctrl-->>-Router: Retorna JSON
-        Router-->>-Front: 200 OK (Array de Professores JSON)
-    else Perfil selecionado: Empresa Parceira
-        Front->>+Router: GET /api/empresas
-        Router->>+Ctrl: getEmpresas(req, res)
-        Ctrl->>+DB: prisma.empresaParceira.findMany()
-        DB-->>-Ctrl: Retorna array de empresas
-        Ctrl-->>-Router: Retorna JSON
-        Router-->>-Front: 200 OK (Array de Empresas JSON)
-    end
-=======
-## Fluxo de Autenticação e Entrada no Sistema
-<img width="753" height="583" alt="image" src="https://github.com/user-attachments/assets/d546edbe-e523-40c6-aa7e-df521f5a64f3" />
+## 1. Fluxo de Autenticação e Login
 
-##Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
->>>>>>> 71444fba6b507e2a836b7e970634ddb3074fc8cf
+<img width="893" height="522" alt="image" src="https://github.com/user-attachments/assets/52d00cc2-0c59-420a-976e-622b9ba17558" />
 
-<img width="1150" height="633" alt="image" src="https://github.com/user-attachments/assets/26110abe-1cb6-4c90-97fc-0fd355d634ec" />
 
-<<<<<<< HEAD
-    alt Credenciais Válidas
-        Front-->>Usuario: Redireciona para o Dashboard específico
-    else Credenciais Inválidas
-        Front-->>-Usuario: Exibe alerta "Email não encontrado ou senha incorreta!"
-    end
-```
 
-#### 2. Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Prof as Professor
-    participant Front as Frontend (ProfessorDashboard.tsx)
-    participant Router as Backend Router (Express)
-    participant Ctrl as TransacaoController (transacaoController.js)
-    database DB as Prisma / MySQL
-    queue Nodemailer as emailService (Nodemailer)
-    actor Aluno as Aluno (Notificado)
+## 2. Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
 
-    Prof->>Front: Seleciona Aluno, insere Valor e Motivo
-    Prof->>+Front: Clica em "Enviar Moedas" (Síncrono)
-    Front->>+Router: POST /api/transacoes/enviar (JSON body)
-    Router->>+Ctrl: enviarMoedas(req, res)
-    
-    Note over Ctrl: Valida dados básicos (campos vazios, valor <= 0)
+<img width="989" height="574" alt="image" src="https://github.com/user-attachments/assets/7b59cfd4-0dd1-41bc-b216-cba24cf62fc5" />
 
-    Ctrl->>+DB: Buscar dados do Professor (prisma.professor.findUnique)
-    DB-->>-Ctrl: Registro do Professor
-    
-    Ctrl->>+DB: Buscar dados do Aluno (prisma.aluno.findUnique)
-    DB-->>-Ctrl: Registro do Aluno
 
-    alt Professor ou Aluno não existem
-        Ctrl-->>-Router: 404 Not Found
-        Router-->>-Front: 404 Not Found
-        Front-->>-Prof: Exibe mensagem de erro
-    else Sucesso na validação
 
-        rect rgb(30, 41, 59)
-            Note over Ctrl, DB: Execução da Transação no Banco ($transaction)
-            Ctrl->>+DB: tx.aluno.update (Incrementa saldo do Aluno)
-            DB-->>-Ctrl: Confirmação
-            Ctrl->>+DB: tx.transacao.create (Registra histórico da transação)
-            DB-->>-Ctrl: Confirmação e dados criados
-        end
 
-        Note over Ctrl, Nodemailer: Processamento Assíncrono de E-mails
-        par Notificar Aluno
-            Ctrl->Nodemailer: sendCoinTransferEmailToAluno(...) (Assíncrono)
-            Nodemailer->Aluno: Envia e-mail de recebimento (Assíncrono)
-        and Notificar Professor
-            Ctrl->Nodemailer: sendCoinTransferEmailToProfessor(...) (Assíncrono)
-            Nodemailer->Prof: Envia e-mail de confirmação de envio (Assíncrono)
-        end
+## 3. Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
 
-        Ctrl-->>-Router: 201 Created (Objeto Transação)
-        Router-->>-Front: 201 Created (Objeto Transação)
-        Front-->>-Prof: Exibe notificação de sucesso via Sonner
-    end
-```
+<img width="1140" height="600" alt="image" src="https://github.com/user-attachments/assets/af11db0a-b391-409f-a0bd-61ba28d5358e" />
 
-#### 3. Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Aluno as Aluno
-    participant Front as Frontend (AlunoDashboard.tsx)
-    participant Router as Backend Router (Express)
-    participant Ctrl as VantagemController (vantagemController.js)
-    database DB as Prisma / MySQL
-    queue Nodemailer as emailService (Nodemailer)
-    actor Empresa as Empresa Parceira (Notificada)
 
-    Aluno->>Front: Visualiza a Vitrine de Vantagens
-    Aluno->>+Front: Clica em "Resgatar" na Vantagem desejada (Síncrono)
-    Front->>+Router: POST /api/vantagens/resgatar (JSON body)
-    Router->>+Ctrl: resgatarVantagem(req, res)
 
-    Ctrl->>+DB: Buscar dados do Aluno
-    DB-->>-Ctrl: Retorna Aluno (saldo atual)
-    Ctrl->>+DB: Buscar Vantagem e Empresa Parceira
-    DB-->>-Ctrl: Retorna Vantagem e dados da Empresa
+## 4. Fluxo de Gerenciamento de Vantagens (Empresa)
 
-    alt Saldo do Aluno < Custo da Vantagem
-        Ctrl-->>-Router: 400 Bad Request (Saldo insuficiente)
-        Router-->>-Front: 400 Bad Request
-        Front-->>-Aluno: Exibe "Saldo insuficiente para resgatar..."
-    else Já resgatou a vantagem anteriormente
-        Ctrl->>+DB: Buscar se já existe resgate (findFirst)
-        DB-->>-Ctrl: Resgate existente encontrado
-        Ctrl-->>-Router: 400 Bad Request (Já resgatou)
-        Router-->>-Front: 400 Bad Request
-        Front-->>-Aluno: Exibe "Você já resgatou esta vantagem."
-    else Saldo Suficiente e Válido
-        Note over Ctrl: Gerar código único alfanumérico (ex: RESG-F8A2D9)
-        
-        rect rgb(30, 41, 59)
-            Note over Ctrl, DB: Execução da Transação no Banco ($transaction)
-            Ctrl->>+DB: tx.aluno.update (Decrementa saldo do Aluno)
-            DB-->>-Ctrl: Confirmação
-            Ctrl->>+DB: tx.resgate.create (Cria cupom com o código alfanumérico)
-            DB-->>-Ctrl: Retorna dados do Resgate
-        end
 
-        Note over Ctrl, Nodemailer: Processamento Assíncrono de E-mails
-        par Notificar Aluno
-            Ctrl->Nodemailer: sendResgateEmailToAluno(...) (Assíncrono)
-            Nodemailer->Aluno: Envia e-mail com cupom gerado (Assíncrono)
-        and Notificar Empresa
-            Ctrl->Nodemailer: sendResgateEmailToEmpresa(...) (Assíncrono)
-            Nodemailer->Empresa: Envia e-mail com dados do resgate e código do cupom (Assíncrono)
-        end
+<img width="682" height="483" alt="image" src="https://github.com/user-attachments/assets/c3a35d4d-7a82-4fec-8868-3ee13a6f92c8" />
 
-        Ctrl-->>-Router: 201 Created (Objeto Resgate com Código)
-        Router-->>-Front: 201 Created
-        Front->>Front: Atualiza saldo local e exibe cupom resgatado
-        Front-->>-Aluno: Notificação de resgate efetuado com sucesso
-    end
-```
 
-#### 4. Fluxo de Gerenciamento de Vantagens (Empresa)
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Empresa as Empresa Parceira
-    participant Front as Frontend (EmpresaDashboard.tsx)
-    participant Router as Backend Router (Express)
-    participant Ctrl as VantagemController (vantagemController.js)
-    database DB as Prisma / MySQL
-
-    Empresa->>Front: Preenche formulário (Título, Descrição, Custo, Imagem)
-    Empresa->>+Front: Clica em "Salvar Vantagem" (Síncrono)
-    Front->>+Router: POST /api/vantagens (JSON body)
-    Router->>+Ctrl: criarVantagem(req, res)
-
-    Ctrl->>+DB: Buscar se Empresa existe (prisma.empresaParceira.findUnique)
-    DB-->>-Ctrl: Registro da Empresa
-
-    alt Empresa não encontrada
-        Ctrl-->>-Router: 404 Not Found
-        Router-->>-Front: 404 Not Found
-        Front-->>-Empresa: Exibe erro de empresa inválida
-    else Empresa existente
-        Ctrl->>+DB: prisma.vantagem.create (Insere nova Vantagem no MySQL)
-        DB-->>-Ctrl: Retorna a nova Vantagem criada
-        Ctrl-->>-Router: 201 Created (Vantagem JSON)
-        Router-->>-Front: 201 Created
-        Front->>Front: Atualiza a lista local de vantagens da empresa
-        Front-->>-Empresa: Exibe aviso de vantagem cadastrada com sucesso!
-    end
-```
-=======
 ##Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
+
 
 <img width="884" height="571" alt="image" src="https://github.com/user-attachments/assets/7e81d643-709f-4dcd-b57d-7b168880edf2" />
 
+
 ##Fluxo de Gerenciamento de Vantagens (Empresa Parceira)
 
+
 <img width="971" height="493" alt="image" src="https://github.com/user-attachments/assets/c76185f8-8a73-4d13-bd6d-8544879d7173" />
->>>>>>> 71444fba6b507e2a836b7e970634ddb3074fc8cf
+
 
 
 
