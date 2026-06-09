@@ -17,6 +17,7 @@ import {
 } from './ui/alert-dialog';
 import { ArrowLeft, Save, Trash2, User } from 'lucide-react';
 import { toast } from 'sonner';
+import { API_BASE } from '../config';
 
 interface EditarPerfilAlunoProps {
   onVoltar: () => void;
@@ -47,7 +48,7 @@ export function EditarPerfilAluno({ onVoltar, onDeletarConta, onUpdate, dadosIni
     let res;
     let atualizado;
     try {
-      res = await fetch(`http://localhost:3001/api/alunos/${dadosIniciais.id}`, {
+      res = await fetch(`${API_BASE}/api/alunos/${dadosIniciais.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -72,7 +73,7 @@ export function EditarPerfilAluno({ onVoltar, onDeletarConta, onUpdate, dadosIni
 
   const handleDeletarConta = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/alunos/${dadosIniciais.id}`, {
+      const res = await fetch(`${API_BASE}/api/alunos/${dadosIniciais.id}`, {
         method: 'DELETE'
       });
       if (res.ok) {

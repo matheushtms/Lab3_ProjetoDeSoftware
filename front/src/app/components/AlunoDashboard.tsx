@@ -27,6 +27,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar 
 } from 'recharts';
 import { EditarPerfilAluno } from './EditarPerfilAluno';
+import { API_BASE } from '../config';
 
 interface AlunoDashboardProps {
   onLogout: () => void;
@@ -50,7 +51,7 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
 
   const fetchVantagens = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/vantagens');
+      const res = await fetch(`${API_BASE}/api/vantagens`);
       const data = await res.json();
       if (res.ok && Array.isArray(data)) {
         setVantagens(data);
@@ -70,7 +71,7 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
 
     setLoadingResgate(vantagemId);
     try {
-      const res = await fetch('http://localhost:3001/api/vantagens/resgatar', {
+      const res = await fetch(`${API_BASE}/api/vantagens/resgatar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -99,7 +100,7 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
 
   const fetchExtrato = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/transacoes/aluno/${userData.id}`);
+      const res = await fetch(`${API_BASE}/api/transacoes/aluno/${userData.id}`);
       const data = await res.json();
       setExtrato(data);
     } catch (error) {

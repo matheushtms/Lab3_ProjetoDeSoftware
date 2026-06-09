@@ -55,6 +55,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { API_BASE } from '../config';
 
 interface EmpresaDashboardProps {
   onLogout: () => void;
@@ -122,7 +123,7 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
 
   const fetchVantagens = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/vantagens?empresaId=${empresaData.id}`);
+      const res = await fetch(`${API_BASE}/api/vantagens?empresaId=${empresaData.id}`);
       const data = await res.json();
       if (res.ok && Array.isArray(data)) {
         setVantagens(data.map((v: any) => ({
@@ -141,7 +142,7 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
 
   const fetchResgates = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/empresas/${empresaData.id}/resgates`);
+      const res = await fetch(`${API_BASE}/api/empresas/${empresaData.id}/resgates`);
       const data = await res.json();
       if (res.ok && Array.isArray(data)) {
         setResgates(data);
@@ -162,7 +163,7 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
 
   const handleAdicionarVantagem = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/vantagens', {
+      const res = await fetch(`${API_BASE}/api/vantagens`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -192,7 +193,7 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
     if (!vantagemEditando) return;
 
     try {
-      const res = await fetch(`http://localhost:3001/api/vantagens/${vantagemEditando.id}`, {
+      const res = await fetch(`${API_BASE}/api/vantagens/${vantagemEditando.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -220,7 +221,7 @@ export function EmpresaDashboard({ onLogout, userData, onUpdateUser }: EmpresaDa
 
   const handleDeletarVantagem = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/vantagens/${id}`, {
+      const res = await fetch(`${API_BASE}/api/vantagens/${id}`, {
         method: 'DELETE'
       });
       if (res.ok) {

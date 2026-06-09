@@ -17,6 +17,7 @@ import {
 } from './ui/alert-dialog';
 import { ArrowLeft, Save, Trash2, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { API_BASE } from '../config';
 
 interface EditarPerfilEmpresaProps {
   onVoltar: () => void;
@@ -47,7 +48,7 @@ export function EditarPerfilEmpresa({ onVoltar, onDeletarConta, onUpdate, dadosI
     let res;
     let atualizado;
     try {
-      res = await fetch(`http://localhost:3001/api/empresas/${dadosIniciais.id}`, {
+      res = await fetch(`${API_BASE}/api/empresas/${dadosIniciais.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -72,7 +73,7 @@ export function EditarPerfilEmpresa({ onVoltar, onDeletarConta, onUpdate, dadosI
 
   const handleDeletarConta = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/empresas/${dadosIniciais.id}`, {
+      const res = await fetch(`${API_BASE}/api/empresas/${dadosIniciais.id}`, {
         method: 'DELETE'
       });
       if (res.ok) {

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { CoinEduLogo } from './CoinEduLogo';
 import { toast } from 'sonner';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { API_BASE } from '../config';
 
 interface ProfessorDashboardProps {
   onLogout: () => void;
@@ -33,7 +34,7 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
 
   const fetchAlunos = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/alunos');
+      const res = await fetch(`${API_BASE}/api/alunos`);
       const data = await res.json();
       setAlunos(data);
     } catch (error) {
@@ -43,7 +44,7 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
 
   const fetchExtrato = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/transacoes/professor/${userData.id}`);
+      const res = await fetch(`${API_BASE}/api/transacoes/professor/${userData.id}`);
       const data = await res.json();
       setExtrato(data);
     } catch (error) {
@@ -65,7 +66,7 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3001/api/transacoes/enviar', {
+      const res = await fetch(`${API_BASE}/api/transacoes/enviar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

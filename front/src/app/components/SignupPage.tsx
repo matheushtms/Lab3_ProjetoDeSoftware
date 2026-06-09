@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Coins, GraduationCap, BookOpen, Building2 } from 'lucide-react';
 import { CoinEduLogo } from './CoinEduLogo';
+import { API_BASE } from '../config';
 
 interface SignupPageProps {
   onBackToLogin: () => void;
@@ -216,7 +217,7 @@ function AlunoSignupForm({ title, description, onSuccess }: FormHeaderProps) {
       return;
     }
     try {
-      const response = await fetch('http://localhost:3001/api/alunos', {
+      const response = await fetch(`${API_BASE}/api/alunos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -333,7 +334,7 @@ function ProfessorSignupForm({ title, description, onSuccess }: FormHeaderProps)
       return;
     }
     try {
-      const response = await fetch('http://localhost:3001/api/professores', {
+      const response = await fetch(`${API_BASE}/api/professores`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -437,7 +438,7 @@ function EmpresaSignupForm({ title, description, onSuccess }: FormHeaderProps) {
       return;
     }
     try {
-      const response = await fetch('http://localhost:3001/api/empresas', {
+      const response = await fetch(`${API_BASE}/api/empresas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

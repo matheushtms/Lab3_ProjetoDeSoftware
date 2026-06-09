@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Coins, GraduationCap, BookOpen, Building2 } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { CoinEduLogo } from './CoinEduLogo';
+import { API_BASE } from '../config';
 
 interface LoginPageProps {
   onNavigateToSignup: () => void;
@@ -23,7 +24,7 @@ export function LoginPage({ onNavigateToSignup, onLoginSuccess }: LoginPageProps
     e.preventDefault();
     try {
       if (activeTab === 'aluno') {
-        const res = await fetch('http://localhost:3001/api/alunos');
+        const res = await fetch(`${API_BASE}/api/alunos`);
         const alunos = await res.json();
         if (res.ok && Array.isArray(alunos)) {
           const userExists = alunos.find((a: any) => a.email === email && a.senha === senha);
@@ -36,7 +37,7 @@ export function LoginPage({ onNavigateToSignup, onLoginSuccess }: LoginPageProps
           alert('Erro ao buscar alunos do servidor.');
         }
       } else if (activeTab === 'empresa') {
-        const res = await fetch('http://localhost:3001/api/empresas');
+        const res = await fetch(`${API_BASE}/api/empresas`);
         const empresas = await res.json();
         if (res.ok && Array.isArray(empresas)) {
           const userExists = empresas.find((e: any) => e.email === email && e.senha === senha);
@@ -49,7 +50,7 @@ export function LoginPage({ onNavigateToSignup, onLoginSuccess }: LoginPageProps
           alert('Erro ao buscar empresas do servidor.');
         }
       } else if (activeTab === 'professor') {
-        const res = await fetch('http://localhost:3001/api/professores');
+        const res = await fetch(`${API_BASE}/api/professores`);
         const professores = await res.json();
         if (res.ok && Array.isArray(professores)) {
           const userExists = professores.find((p: any) => p.email === email && p.senha === senha);
