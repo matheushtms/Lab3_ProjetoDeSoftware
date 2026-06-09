@@ -92,8 +92,8 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 ---
 
 ###  Diagrama de Sequência Geral
-Representação detalhada dos fluxos de dados, comunicação entre Frontend e Backend, chamadas à API, transações do banco de dados (Prisma/MySQL) e envio de e-mails (Nodemailer).
 
+<<<<<<< HEAD
 #### 1. Fluxo de Autenticação e Login
 ```mermaid
 sequenceDiagram
@@ -129,9 +129,16 @@ sequenceDiagram
         Ctrl-->>-Router: Retorna JSON
         Router-->>-Front: 200 OK (Array de Empresas JSON)
     end
+=======
+## Fluxo de Autenticação e Entrada no Sistema
+<img width="753" height="583" alt="image" src="https://github.com/user-attachments/assets/d546edbe-e523-40c6-aa7e-df521f5a64f3" />
 
-    Note over Front: Frontend executa a validação local:<br/>userExists = lista.find(email e senha coincidem)
+##Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
+>>>>>>> 71444fba6b507e2a836b7e970634ddb3074fc8cf
 
+<img width="1150" height="633" alt="image" src="https://github.com/user-attachments/assets/26110abe-1cb6-4c90-97fc-0fd355d634ec" />
+
+<<<<<<< HEAD
     alt Credenciais Válidas
         Front-->>Usuario: Redireciona para o Dashboard específico
     else Credenciais Inválidas
@@ -283,6 +290,15 @@ sequenceDiagram
         Front-->>-Empresa: Exibe aviso de vantagem cadastrada com sucesso!
     end
 ```
+=======
+##Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
+
+<img width="884" height="571" alt="image" src="https://github.com/user-attachments/assets/7e81d643-709f-4dcd-b57d-7b168880edf2" />
+
+##Fluxo de Gerenciamento de Vantagens (Empresa Parceira)
+
+<img width="971" height="493" alt="image" src="https://github.com/user-attachments/assets/c76185f8-8a73-4d13-bd6d-8544879d7173" />
+>>>>>>> 71444fba6b507e2a836b7e970634ddb3074fc8cf
 
 
 
