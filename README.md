@@ -91,23 +91,34 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 ---
 
+### Diagrama de Implantação
+
+
+
+
+---
+
 ###  Diagrama de Sequência Geral
 
 
-#### 1. Fluxo de Autenticação e Login
-
-
-#### 2. Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
-
-
-#### 3. Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
-
-
-#### 4. Fluxo de Gerenciamento de Vantagens (Empresa)
+## 1. Fluxo de Autenticação e Login
 
 
 
-=======
+
+## 2. Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
+
+
+
+
+## 3. Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
+
+
+
+## 4. Fluxo de Gerenciamento de Vantagens (Empresa)
+
+
+
 ##Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
 
 <img width="884" height="571" alt="image" src="https://github.com/user-attachments/assets/7e81d643-709f-4dcd-b57d-7b168880edf2" />
