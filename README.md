@@ -93,7 +93,25 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 ### Diagrama de Implantação
 
+<img width="873" height="519" alt="image" src="https://github.com/user-attachments/assets/ca717e80-8eee-4453-b91c-8ef8329e0d7c" />
 
+### Diagrama de Comunicação
+
+## Fluxo de Autenticação e Login
+
+<img width="660" height="492" alt="image" src="https://github.com/user-attachments/assets/d33a37a3-a6a8-48d3-a2e7-6eb6834b43e5" />
+
+
+## Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
+
+<img width="663" height="472" alt="image" src="https://github.com/user-attachments/assets/3810a4f2-cb46-45a1-8469-65c9ccca740e" />
+
+## Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
+<img width="671" height="477" alt="image" src="https://github.com/user-attachments/assets/f34e32e7-8c8c-432d-8bce-dc2bb9bd0941" />
+
+## Fluxo de Gerenciamento de Vantagens (Empresa)
+
+<img width="667" height="490" alt="image" src="https://github.com/user-attachments/assets/8a10c7cd-1d52-45e4-b9ae-939c926663c3" />
 
 
 ---
@@ -103,27 +121,37 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 ## 1. Fluxo de Autenticação e Login
 
+<img width="893" height="522" alt="image" src="https://github.com/user-attachments/assets/52d00cc2-0c59-420a-976e-622b9ba17558" />
 
 
 
 ## 2. Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
+
+<img width="989" height="574" alt="image" src="https://github.com/user-attachments/assets/7b59cfd4-0dd1-41bc-b216-cba24cf62fc5" />
 
 
 
 
 ## 3. Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
 
+<img width="1140" height="600" alt="image" src="https://github.com/user-attachments/assets/af11db0a-b391-409f-a0bd-61ba28d5358e" />
+
 
 
 ## 4. Fluxo de Gerenciamento de Vantagens (Empresa)
 
 
+<img width="682" height="483" alt="image" src="https://github.com/user-attachments/assets/c3a35d4d-7a82-4fec-8868-3ee13a6f92c8" />
+
 
 ##Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
 
+
 <img width="884" height="571" alt="image" src="https://github.com/user-attachments/assets/7e81d643-709f-4dcd-b57d-7b168880edf2" />
 
+
 ##Fluxo de Gerenciamento de Vantagens (Empresa Parceira)
+
 
 <img width="971" height="493" alt="image" src="https://github.com/user-attachments/assets/c76185f8-8a73-4d13-bd6d-8544879d7173" />
 
