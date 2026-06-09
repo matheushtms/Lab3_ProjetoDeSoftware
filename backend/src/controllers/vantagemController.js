@@ -88,23 +88,23 @@ const resgatarVantagem = async (req, res) => {
       return novoResgate;
     });
 
-    // Enviar emails
-    await sendResgateEmailToAluno(
+    // Enviar emails em segundo plano (sem travar a resposta)
+    sendResgateEmailToAluno(
       aluno.email,
       aluno.nome,
       vantagem.titulo,
       vantagem.empresa.nomeFantasia,
       codigoResgate
-    );
+    ).catch(err => console.error('Erro ao enviar email de resgate para o aluno:', err));
 
-    await sendResgateEmailToEmpresa(
+    sendResgateEmailToEmpresa(
       vantagem.empresa.email,
       vantagem.empresa.nomeFantasia,
       aluno.nome,
       aluno.email,
       vantagem.titulo,
       codigoResgate
-    );
+    ).catch(err => console.error('Erro ao enviar email de resgate para a empresa:', err));
 
     res.status(201).json(resgate);
   } catch (error) {

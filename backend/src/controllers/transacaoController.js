@@ -59,9 +59,11 @@ const enviarMoedas = async (req, res) => {
       return novaTransacao;
     });
 
-    // Enviar emails
-    await sendCoinTransferEmailToAluno(aluno.email, aluno.nome, professor.nome, valor, motivo);
-    await sendCoinTransferEmailToProfessor(professor.email, professor.nome, aluno.nome, valor, motivo);
+    // Enviar emails em segundo plano (sem travar a resposta)
+    sendCoinTransferEmailToAluno(aluno.email, aluno.nome, professor.nome, valor, motivo)
+      .catch(err => console.error('Erro ao enviar email para o aluno:', err));
+    sendCoinTransferEmailToProfessor(professor.email, professor.nome, aluno.nome, valor, motivo)
+      .catch(err => console.error('Erro ao enviar email para o professor:', err));
 
     res.status(201).json(transacao);
 
