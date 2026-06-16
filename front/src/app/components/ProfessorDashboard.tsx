@@ -65,6 +65,9 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
     }
 
     setLoading(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     try {
       const res = await fetch(`${API_BASE}/api/transacoes/enviar`, {
         method: 'POST',
@@ -74,8 +77,10 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
           alunoId: alunoSelecionado,
           valor: Number(valorEnvio),
           motivo: motivoEnvio
-        })
+        }),
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
 
       if (res.ok) {
         toast.success('Moedas enviadas com sucesso!');
@@ -88,9 +93,14 @@ export function ProfessorDashboard({ onLogout, userData, onUpdateUser }: Profess
         const errorData = await res.json();
         toast.error(errorData.error || 'Erro ao enviar moedas.');
       }
-    } catch (error) {
+    } catch (error: any) {
+      clearTimeout(timeoutId);
       console.error(error);
-      toast.error('Erro de conexão ao enviar moedas.');
+      if (error.name === 'AbortError') {
+        toast.error('Tempo limite de requisição excedido. Verifique sua conexão.');
+      } else {
+        toast.error('Erro de conexão ao enviar moedas.');
+      }
     } finally {
       setLoading(false);
     }

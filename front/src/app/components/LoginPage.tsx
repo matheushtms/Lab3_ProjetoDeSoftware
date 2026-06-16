@@ -101,7 +101,7 @@ export function LoginPage({ onNavigateToSignup, onLoginSuccess }: LoginPageProps
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-        className="w-full max-w-6xl grid lg:grid-cols-2 bg-card/40 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden my-auto"
+        className="w-full max-w-6xl grid lg:grid-cols-2 bg-card/40 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden my-auto mx-auto"
       >
         {/* Lado esquerdo - Imagem e informações */}
         <div className="hidden lg:flex flex-col justify-center items-center p-12 relative overflow-hidden border-r border-white/10">

@@ -70,6 +70,9 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
     }
 
     setLoadingResgate(vantagemId);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     try {
       const res = await fetch(`${API_BASE}/api/vantagens/resgatar`, {
         method: 'POST',
@@ -77,8 +80,10 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
         body: JSON.stringify({
           alunoId: alunoData.id,
           vantagemId
-        })
+        }),
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
 
       if (res.ok) {
         toast.success('Vantagem resgatada com sucesso! Verifique seu email.');
@@ -90,9 +95,14 @@ export function AlunoDashboard({ onLogout, userData, onUpdateUser }: AlunoDashbo
         const errorData = await res.json();
         toast.error(errorData.error || 'Erro ao resgatar vantagem.');
       }
-    } catch (error) {
+    } catch (error: any) {
+      clearTimeout(timeoutId);
       console.error(error);
-      toast.error('Erro de conexão ao resgatar vantagem.');
+      if (error.name === 'AbortError') {
+        toast.error('Tempo limite de requisição excedido. Verifique sua conexão.');
+      } else {
+        toast.error('Erro de conexão ao resgatar vantagem.');
+      }
     } finally {
       setLoadingResgate(null);
     }
