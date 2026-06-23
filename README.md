@@ -144,7 +144,7 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 <img width="884" height="571" alt="image" src="https://github.com/user-attachments/assets/7e81d643-709f-4dcd-b57d-7b168880edf2" />
 
 
-##Fluxo de Gerenciamento de Vantagens (Empresa Parceira)
+## Fluxo de Gerenciamento de Vantagens (Empresa Parceira)
 
 
 <img width="971" height="493" alt="image" src="https://github.com/user-attachments/assets/c76185f8-8a73-4d13-bd6d-8544879d7173" />
