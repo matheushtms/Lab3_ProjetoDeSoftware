@@ -95,23 +95,95 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 <img width="873" height="519" alt="image" src="https://github.com/user-attachments/assets/ca717e80-8eee-4453-b91c-8ef8329e0d7c" />
 
-### Diagrama de Comunicação
+###  Diagramas de Comunicação
 
-## Fluxo de Autenticação e Login
+Os diagramas de comunicação (UML) descrevem a interação dinâmica e o fluxo de mensagens entre os objetos do sistema em ordem cronológica de execução.
 
-<img width="660" height="492" alt="image" src="https://github.com/user-attachments/assets/d33a37a3-a6a8-48d3-a2e7-6eb6834b43e5" />
+#### 1. Fluxo de Autenticação e Login
+```mermaid
+flowchart TD
+    %% Nós
+    Usuario(["👤 :Usuario (Aluno/Prof/Empresa)"])
+    LoginPage["💻 :LoginPage (UI)"]
+    Router["🚀 :ExpressRouter (Router)"]
+    Controller["⚙️ :UserController (Control)"]
+    Prisma["💎 :prismaClient (ORM)"]
 
+    %% Conexões de Comunicação
+    Usuario ---|1: clicarEntrar(perfil, email, senha)| LoginPage
+    LoginPage ---|1.1: GET /api/alunos ou /api/professores ou /api/empresas| Router
+    Router ---|1.2: getAlunos/getProfessores/getEmpresas(req, res)| Controller
+    Controller ---|1.3: findMany()| Prisma
+```
 
-## Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
+#### 2. Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
+```mermaid
+flowchart TD
+    %% Nós
+    Prof(["👤 :Professor"])
+    FrontUI["💻 :ProfessorDashboard (UI)"]
+    Router["🚀 :transacaoRoutes (Router)"]
+    Controller["⚙️ :transacaoController (Control)"]
+    Prisma["💎 :prismaClient (ORM)"]
+    EmailServ["✉️ :emailService (Service)"]
+    Nodemailer["📧 :NodemailerTransporter"]
+    Aluno(["👤 :Aluno"])
 
-<img width="663" height="472" alt="image" src="https://github.com/user-attachments/assets/3810a4f2-cb46-45a1-8469-65c9ccca740e" />
+    %% Conexões de Comunicação
+    Prof ---|1: clicarEnviarMoedas(alunoId, valor, motivo)| FrontUI
+    FrontUI ---|1.1: POST /api/transacoes/enviar| Router
+    Router ---|1.2: enviarMoedas(req, res)| Controller
+    Controller ---|1.3: findUnique(professorId)| Prisma
+    Controller ---|1.4: findUnique(alunoId)| Prisma
+    Controller ---|1.5: $transaction(incrementarSaldo, registrarTransacao)| Prisma
+    Controller ---|1.6: sendCoinTransferEmailToAluno() & sendCoinTransferEmailToProfessor()| EmailServ
+    EmailServ ---|1.6.1: sendMail()| Nodemailer
+    Nodemailer -.->|Notifica por E-mail| Aluno
+    Nodemailer -.->|Notifica por E-mail| Prof
+```
 
-## Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
-<img width="671" height="477" alt="image" src="https://github.com/user-attachments/assets/f34e32e7-8c8c-432d-8bce-dc2bb9bd0941" />
+#### 3. Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
+```mermaid
+flowchart TD
+    %% Nós
+    Aluno(["👤 :Aluno"])
+    FrontUI["💻 :AlunoDashboard (UI)"]
+    Router["🚀 :vantagemRoutes (Router)"]
+    Controller["⚙️ :vantagemController (Control)"]
+    Prisma["💎 :prismaClient (ORM)"]
+    EmailServ["✉️ :emailService (Service)"]
+    Nodemailer["📧 :NodemailerTransporter"]
+    Empresa(["🏢 :EmpresaParceira"])
 
-## Fluxo de Gerenciamento de Vantagens (Empresa)
+    %% Conexões de Comunicação
+    Aluno ---|1: clicarResgatarVantagem| FrontUI
+    FrontUI ---|1.1: POST /api/vantagens/resgatar| Router
+    Router ---|1.2: resgatarVantagem(req, res)| Controller
+    Controller ---|1.3: findUnique(alunoId)| Prisma
+    Controller ---|1.4: findUnique(vantagemId)| Prisma
+    Controller ---|1.5: $transaction(debitarSaldo, registrarResgate)| Prisma
+    Controller ---|1.6: sendResgateEmailToAluno() e sendResgateEmailToEmpresa()| EmailServ
+    EmailServ ---|1.6.1: generateQRCodeUrl & sendMail()| Nodemailer
+    Nodemailer -.->|Notifica por E-mail| Aluno
+    Nodemailer -.->|Notifica por E-mail| Empresa
+```
 
-<img width="667" height="490" alt="image" src="https://github.com/user-attachments/assets/8a10c7cd-1d52-45e4-b9ae-939c926663c3" />
+#### 4. Fluxo de Gerenciamento de Vantagens (Empresa Parceira)
+```mermaid
+flowchart TD
+    %% Nós
+    Empresa(["🏢 :EmpresaParceira"])
+    FrontUI["💻 :EmpresaDashboard (UI)"]
+    Router["🚀 :vantagemRoutes (Router)"]
+    Controller["⚙️ :vantagemController (Control)"]
+    Prisma["💎 :prismaClient (ORM)"]
+
+    %% Conexões de Comunicação
+    Empresa ---|1: salvarVantagem(titulo, descricao, custo, imagem)| FrontUI
+    FrontUI ---|1.1: POST /api/vantagens| Router
+    Router ---|1.2: criarVantagem(req, res)| Controller
+    Controller ---|1.3: findUnique(empresaId)| Prisma
+    Controller ---|1.4: create(vantagem)| Prisma
 
 
 ---
