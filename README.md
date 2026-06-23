@@ -95,6 +95,11 @@ Detalhamento dos requisitos do sistema sob a perspectiva das necessidades dos us
 
 <img width="873" height="519" alt="image" src="https://github.com/user-attachments/assets/ca717e80-8eee-4453-b91c-8ef8329e0d7c" />
 
+### Diagrama de comunicação
+
+<img width="1408" height="768" alt="Diagrama de comunicação" src="https://github.com/user-attachments/assets/4ca69f08-8f23-45e0-8763-ab97d363f7bd" />
+
+
 ---
 
 #### 2. Configurando e Executando o Back-end
