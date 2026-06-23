@@ -110,10 +110,10 @@ flowchart TD
     Prisma["💎 :prismaClient (ORM)"]
 
     %% Conexões de Comunicação
-    Usuario ---|1: clicarEntrar(perfil, email, senha)| LoginPage
-    LoginPage ---|1.1: GET /api/alunos ou /api/professores ou /api/empresas| Router
-    Router ---|1.2: getAlunos/getProfessores/getEmpresas(req, res)| Controller
-    Controller ---|1.3: findMany()| Prisma
+    Usuario ---|"1: clicarEntrar(perfil, email, senha)"| LoginPage
+    LoginPage ---|"1.1: GET /api/alunos ou /api/professores ou /api/empresas"| Router
+    Router ---|"1.2: getAlunos/getProfessores/getEmpresas(req, res)"| Controller
+    Controller ---|"1.3: findMany()"| Prisma
 ```
 
 #### 2. Fluxo de Distribuição de Moedas (Professor ➔ Aluno)
@@ -130,16 +130,16 @@ flowchart TD
     Aluno(["👤 :Aluno"])
 
     %% Conexões de Comunicação
-    Prof ---|1: clicarEnviarMoedas(alunoId, valor, motivo)| FrontUI
-    FrontUI ---|1.1: POST /api/transacoes/enviar| Router
-    Router ---|1.2: enviarMoedas(req, res)| Controller
-    Controller ---|1.3: findUnique(professorId)| Prisma
-    Controller ---|1.4: findUnique(alunoId)| Prisma
-    Controller ---|1.5: $transaction(incrementarSaldo, registrarTransacao)| Prisma
-    Controller ---|1.6: sendCoinTransferEmailToAluno() & sendCoinTransferEmailToProfessor()| EmailServ
-    EmailServ ---|1.6.1: sendMail()| Nodemailer
-    Nodemailer -.->|Notifica por E-mail| Aluno
-    Nodemailer -.->|Notifica por E-mail| Prof
+    Prof ---|"1: clicarEnviarMoedas(alunoId, valor, motivo)"| FrontUI
+    FrontUI ---|"1.1: POST /api/transacoes/enviar"| Router
+    Router ---|"1.2: enviarMoedas(req, res)"| Controller
+    Controller ---|"1.3: findUnique(professorId)"| Prisma
+    Controller ---|"1.4: findUnique(alunoId)"| Prisma
+    Controller ---|"1.5: $transaction(incrementarSaldo, registrarTransacao)"| Prisma
+    Controller ---|"1.6: sendCoinTransferEmailToAluno() & sendCoinTransferEmailToProfessor()"| EmailServ
+    EmailServ ---|"1.6.1: sendMail()"| Nodemailer
+    Nodemailer -.->|"Notifica por E-mail"| Aluno
+    Nodemailer -.->|"Notifica por E-mail"| Prof
 ```
 
 #### 3. Fluxo de Resgate de Vantagens (Aluno ➔ Empresa)
@@ -156,16 +156,16 @@ flowchart TD
     Empresa(["🏢 :EmpresaParceira"])
 
     %% Conexões de Comunicação
-    Aluno ---|1: clicarResgatarVantagem| FrontUI
-    FrontUI ---|1.1: POST /api/vantagens/resgatar| Router
-    Router ---|1.2: resgatarVantagem(req, res)| Controller
-    Controller ---|1.3: findUnique(alunoId)| Prisma
-    Controller ---|1.4: findUnique(vantagemId)| Prisma
-    Controller ---|1.5: $transaction(debitarSaldo, registrarResgate)| Prisma
-    Controller ---|1.6: sendResgateEmailToAluno() e sendResgateEmailToEmpresa()| EmailServ
-    EmailServ ---|1.6.1: generateQRCodeUrl & sendMail()| Nodemailer
-    Nodemailer -.->|Notifica por E-mail| Aluno
-    Nodemailer -.->|Notifica por E-mail| Empresa
+    Aluno ---|"1: clicarResgatarVantagem"| FrontUI
+    FrontUI ---|"1.1: POST /api/vantagens/resgatar"| Router
+    Router ---|"1.2: resgatarVantagem(req, res)"| Controller
+    Controller ---|"1.3: findUnique(alunoId)"| Prisma
+    Controller ---|"1.4: findUnique(vantagemId)"| Prisma
+    Controller ---|"1.5: $transaction(debitarSaldo, registrarResgate)"| Prisma
+    Controller ---|"1.6: sendResgateEmailToAluno() e sendResgateEmailToEmpresa()"| EmailServ
+    EmailServ ---|"1.6.1: generateQRCodeUrl & sendMail()"| Nodemailer
+    Nodemailer -.->|"Notifica por E-mail"| Aluno
+    Nodemailer -.->|"Notifica por E-mail"| Empresa
 ```
 
 #### 4. Fluxo de Gerenciamento de Vantagens (Empresa Parceira)
@@ -179,11 +179,11 @@ flowchart TD
     Prisma["💎 :prismaClient (ORM)"]
 
     %% Conexões de Comunicação
-    Empresa ---|1: salvarVantagem(titulo, descricao, custo, imagem)| FrontUI
-    FrontUI ---|1.1: POST /api/vantagens| Router
-    Router ---|1.2: criarVantagem(req, res)| Controller
-    Controller ---|1.3: findUnique(empresaId)| Prisma
-    Controller ---|1.4: create(vantagem)| Prisma
+    Empresa ---|"1: salvarVantagem(titulo, descricao, custo, imagem)"| FrontUI
+    FrontUI ---|"1.1: POST /api/vantagens"| Router
+    Router ---|"1.2: criarVantagem(req, res)"| Controller
+    Controller ---|"1.3: findUnique(empresaId)"| Prisma
+    Controller ---|"1.4: create(vantagem)"| Prisma
 
 
 ---
